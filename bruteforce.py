@@ -3,7 +3,8 @@ from itertools import combinations
 
 def first_test(iterable, r):
     test = combinations(iterable, r)
-    [print(t) for t in test]
+    with open('test.txt', 'a') as file:
+        [file.write(str(f'{t}\n')) for t in test]
 
 
 actions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
