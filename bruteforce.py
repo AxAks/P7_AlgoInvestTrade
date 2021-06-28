@@ -44,23 +44,26 @@ def get_portfolio_score(portfolio):
     pass
 
 
-def get_all_available_portfolios(actions_list, count):
-    generator = combinations(actions_list, count)
-    for portfolio in generator:
-        portfolio_total_cost = 0
-        for action in portfolio:
-            action_cost = action['cost']
-            portfolio_total_cost += action_cost
-
-        if portfolio_total_cost <= 500:
-            print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
-        else:
-            print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
+def get_all_possible_portfolios(actions_list):
+    all_possible_portfolios = []
+    for actions_amount in range(1, 4): # à changer pour 21(pour arriver à 20 actions !) (pour tester changer les range entre 1 et 21
+        generator = combinations(actions_list, actions_amount)
+        for portfolio in generator:
+            portfolio_total_cost = 0
+            for action in portfolio:
+                portfolio_total_cost += action['cost']
+                if portfolio_total_cost <= 500:
+                    print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
+                    all_possible_portfolios.append(portfolio)
+                    print(len(portfolio))
+                else:
+                    print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
+    print(len(all_possible_portfolios))
+    return all_possible_portfolios
 
 
 actions = sample_values.actions_list
 
-for actions_amount in range(1, 20):
-    get_all_available_portfolios(actions, actions_amount)
+get_all_possible_portfolios(actions)
 
 
