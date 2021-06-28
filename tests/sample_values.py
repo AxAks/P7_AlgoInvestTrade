@@ -100,3 +100,8 @@ actions_list = [
     'roi': 0.18
     }
 ]
+
+
+test_portfolio = ({'name': 'R', 'cost': 10, 'roi': 0.14},
+                  {'name': 'S', 'cost': 24, 'roi': 0.21},
+                  {'name': 'T', 'cost': 114, 'roi': 0.18})
