@@ -1,6 +1,5 @@
 from itertools import combinations
 from typing import Union
-import json
 
 from tests import sample_values
 
@@ -74,36 +73,49 @@ def get_all_possible_portfolios(actions_list: list[dict]) -> list[tuple]:  # à 
     return all_possible_portfolios
 
 
-def find_best_portfolio(actions_list: list[dict]):
+def find_best_portfolio(actions_list: list[dict]):  # ajouter notions de filtre montant fortefeuille et de score via des lambdas
     for actions_amount in range(17, 21):
         generator = combinations(actions_list, actions_amount)
+        acceptable_portfolios_list = []
         for portfolio in generator:
-            portfolio_total_cost = 0
-            for action in portfolio:
-                portfolio_total_cost += action['cost']
-                if portfolio_total_cost <= 500:
-                    print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
-                    """
-                    with open('tests/test.txt', 'r+') as file:
-                        # voir s'il y a deja un portefeuille dans le fichier
-                        # si oui comparer les deux 
-                        # si le deuxieme a un meilleur indice de rentabilité remplacer le portefeuille enregistré dans le fichier 
-                        previous_portfolio = file.read()
-                        print(previous_portfolio)
-                        if tuple(previous_portfolio) != () and \
-                                get_average_roi(tuple(previous_portfolio)) <= get_average_roi(portfolio):
-                            print(portfolio)  # à enlever ensuite
-                            print(len(portfolio))  # à enlever ensuite
-                            print("this portfolio is better than the previous one, let's keep it !")
-                            
-                            file.write(str(portfolio))
-                        else:
-                            print('oups !')
-                            continue
-                        """
-                else:
-                    print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
-                    print('grrr')
+            portfolio_cost = lambda x: sum([x['cost']])
+            if portfolio_cost <= 500:
+                print(f'Great Portfolio under 500€: {portfolio_cost}€')
+                acceptable_portfolios_list.append(portfolio)
+                # keep !
+                # une fonction lambda pour voir si le portefeuille est acceptable
+                # une fonction lambda pour definir son score de rentabilité
+            else:
+                print(f'this portfolio represents more than 500€ investment: {portfolio_cost}€')
+                print('grrr')
+                # skip automatically !
+    return acceptable_portfolios_list
+
+
+    """
+    with open('tests/test.txt', 'r+') as file:
+        # voir s'il y a deja un portefeuille dans le fichier
+        # si oui comparer les deux 
+        # si le deuxieme a un meilleur indice de rentabilité remplacer le portefeuille enregistré dans le fichier 
+        previous_portfolio = file.read()
+        print(previous_portfolio)
+        if tuple(previous_portfolio) != ():
+            if get_average_roi(tuple(previous_portfolio)) <= get_average_roi(portfolio):
+                print(portfolio)  # à enlever ensuite
+                print(len(portfolio))  # à enlever ensuite
+                print("this portfolio is better than the previous one, let's keep it !")
+
+                file.write(str(portfolio))
+                print('portfolio saved')
+            else:
+                print('oups !')
+                continue
+        else:
+            file.write(str(portfolio))
+            print('portfolio saved')
+    """
+
+
 
 """
 # Program to show the use of lambda functions
