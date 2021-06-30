@@ -24,6 +24,35 @@ recupérer la liste des actions via l'import d'un fichier csv ?
 """
 
 
+def get_portfolio_roi_cost_index(portfolio: tuple):  # faux !? ce qui compte c'est pas le ratio, mais le montant réél initial en euros
+    """
+    enables to evaluate the Return on investment of the portfolio after two years
+    takes into account the initial cost of the portfolio
+    """
+    portfolio_average_roi = get_portfolio_average_roi(portfolio)
+    portfolio_cost = get_portfolio_cost(portfolio)
+    portfolio_roi_cost_index = round(portfolio_average_roi / portfolio_cost, 6)
+    print(f'Portfolio Cost: {portfolio_cost}')  # à enlever ensuite
+    print(f"Portfolio Average ROI: {portfolio_average_roi}")  # à enlever ensuite
+    print(f"Portfolio ROI/Cost index : {portfolio_roi_cost_index}\n")  # à enlever ensuite
+    return portfolio_roi_cost_index
+
+
+def get_portfolio_average_roi(portfolio: tuple):
+    """
+    enables to calculate the raw Return on Investment of a portfolio
+    helps calculate the ROI/Cost index of a portfolio
+    :param portfolio:
+    :return: portfolio_average_roi
+    """
+    shares_roi_sum = 0
+    for share in portfolio:
+        print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
+        shares_roi_sum += share['roi']
+        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 4)
+    return portfolio_average_roi
+
+
 def get_portfolio_cost(portfolio: tuple):
     #  ajouter la notion de cout du portefeuille dans le calcul de l'indice ? si oui comment ?
     #  si on garde, expliquer la formule average_roi / portfolio_cost et voir comment on selectionne le meilleur indice cost/ROI
@@ -37,44 +66,15 @@ def get_portfolio_cost(portfolio: tuple):
     return portfolio_cost
 
 
-def get_portfolio_average_roi(portfolio: tuple):
-    """
-    helps calculate the ROI/Cost index of a share
-    :param portfolio:
-    :return: portfolio_average_roi
-    """
-    shares_roi_sum = 0
-    for share in portfolio:
-        print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
-        shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 4)
-    return portfolio_average_roi
-
-
-def get_portfolio_roi_cost_index(portfolio: tuple):
-    """
-    enables to evaluate the Return on investment of the portfolio after two years
-    """
-    portfolio_average_roi = get_portfolio_average_roi(portfolio)
-    portfolio_cost = get_portfolio_cost(portfolio)
-    portfolio_roi_cost_index = round(portfolio_average_roi / portfolio_cost, 6)
-    print(f'Portfolio Cost: {portfolio_cost}')
-    print(f"Portfolio Average ROI: {portfolio_average_roi}")  # à enlever ensuite
-    print(f"Portfolio ROI/Cost index : {portfolio_roi_cost_index}\n")  # à enlever ensuite
-    return portfolio_roi_cost_index
-
-
 def filter_cost_acceptable_portfolio(portfolio: tuple):
     """
     Checks whether a portfolio is under 500€ or not
     :param portfolio:
     :return:
     """
-    portfolio_total_cost = 0
-    for share in portfolio:
-        portfolio_total_cost += share['cost']
-    if portfolio_total_cost <= 500:
-        print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
+    portfolio_cost = get_portfolio_cost(portfolio)
+    if portfolio_cost <= 500:
+        print(f'Great Portfolio under 500€: {portfolio_cost}€')
         print(portfolio)  # à enlever ensuite
         print(len(portfolio))  # à enlever ensuite
         return portfolio
