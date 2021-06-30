@@ -65,13 +65,13 @@ def get_all_possible_portfolios(actions_list: list[dict], replacement: bool = Fa
             portfolio_total_cost = 0
             for action in portfolio:
                 portfolio_total_cost += action['cost']
-                if portfolio_total_cost <= 500:
-                    print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
-                    all_possible_portfolios.append(portfolio)
-                    print(portfolio)  # à enlever ensuite
-                    print(len(portfolio))  # à enlever ensuite
-                else:
-                    print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
+            if portfolio_total_cost <= 500:
+                print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
+                all_possible_portfolios.append(portfolio)
+                print(portfolio)  # à enlever ensuite
+                print(len(portfolio))  # à enlever ensuite
+            else:
+                print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
     print(f'Amount of Possible Portfolios: {len(all_possible_portfolios)}')  # à enlever ensuite
     return all_possible_portfolios
 
