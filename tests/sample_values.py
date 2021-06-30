@@ -1,4 +1,4 @@
-actions_list = [
+shares_list = [
     {
     'name': 'A',
     'cost': 20,

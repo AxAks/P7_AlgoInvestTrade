@@ -36,35 +36,36 @@ def get_average_roi(portfolio: Union[tuple, list]):  # peut etre juste tuple en 
     """
     enables to evaluate the Return on investment of the portfolio after two years
     """
-    actions_roi_sum = 0
+    shares_roi_sum = 0
     # portfolio_total_cost = 0   #  ajouter la notion de cout du portefeuille dans le calcul de l'indice ? si oui comment ?
-    for action in portfolio:
-        print(f"Action Name: {action['name']} , Cost: {action['cost']}, ROI: {action['roi']}")  # à enlever ensuite
-        actions_roi_sum += action['roi']
-        # portfolio_total_cost += action['cost']
-    portfolio_average_roi = actions_roi_sum / len(portfolio)
+    for share in portfolio:
+        print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
+        shares_roi_sum += share['roi']
+        # portfolio_total_cost += share['cost']
+    portfolio_average_roi = shares_roi_sum / len(portfolio)
     print(f"Portfolio Average ROI: {portfolio_average_roi}\n")  # à enlever ensuite
     return portfolio_average_roi
 
 
-def get_all_possible_portfolios(actions_list: list[dict], replacement: bool = False) -> list[tuple]:  # à retravailler
+def get_all_possible_portfolios(shares_list: list[dict], replacement: bool = False) -> list[tuple]:  # à retravailler
     """
-    Returns all possible combinations of actions under the given criteria:
-    - cost of portfolio under 500€
-    - Actions only buyable once
-    Give the possibility to choose whether an action can be
+    Returns all possible combinations of shares under the given criteria:
+    - Cost of portfolio under 500€
+    - Share only buyable once
+    - Share cannot be sold partially
+    Give the possibility to choose whether an share can be
     bought several times (if needed later for evolution)
     """
     all_possible_portfolios = []
-    for actions_amount in range(1, 3): # à changer pour (1, 21) (pour arriver à 20 actions !) (tester en changeant les ranges de 1 à 21
+    for shares_amount in range(1, 3): # à changer pour (1, 21) (pour arriver à 20 shares !) (tester en changeant les ranges de 1 à 21
         if replacement:
-            generator = combinations_with_replacement(actions_list, actions_amount)
+            generator = combinations_with_replacement(shares_list, shares_amount)
         else:
-            generator = combinations(actions_list, actions_amount)
+            generator = combinations(shares_list, shares_amount)
         for portfolio in generator:
             portfolio_total_cost = 0
-            for action in portfolio:
-                portfolio_total_cost += action['cost']
+            for share in portfolio:
+                portfolio_total_cost += share['cost']
             if portfolio_total_cost <= 500:
                 print(f'Great Portfolio under 500€: {portfolio_total_cost}€')
                 all_possible_portfolios.append(portfolio)
@@ -76,9 +77,9 @@ def get_all_possible_portfolios(actions_list: list[dict], replacement: bool = Fa
     return all_possible_portfolios
 
 
-def find_best_portfolio(actions_list: list[dict]):  # ajouter notions de filtre montant fortefeuille et de score via des lambdas
-    for actions_amount in range(17, 21):
-        generator = combinations(actions_list, actions_amount)
+def find_best_portfolio(shares_list: list[dict]):  # ajouter notions de filtre montant fortefeuille et de score via des lambdas
+    for shares_amount in range(17, 21):
+        generator = combinations(shares_list, shares_amount)
         acceptable_portfolios_list = []
         for portfolio in generator:
             portfolio_cost = lambda x: sum([x['cost']])
@@ -128,12 +129,12 @@ print(double(5))
 """
 
 # test samples
-actions = sample_values.actions_list
+shares = sample_values.shares_list
 test_portfolio = sample_values.test_portfolio
 
 
 # functions execution
-portfolios = get_all_possible_portfolios(actions)
-#find_best_portfolio(actions)
-#for portfolio in portfolios:
-#   get_average_roi(portfolio)
+portfolios = get_all_possible_portfolios(shares)
+#find_best_portfolio(shares)
+for portfolio in portfolios:
+    get_average_roi(portfolio)
