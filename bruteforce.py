@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, combinations_with_replacement
 from typing import Union
 
 from tests import sample_values
@@ -39,25 +39,28 @@ def get_average_roi(portfolio: Union[tuple, list]):  # peut etre juste tuple en 
     actions_roi_sum = 0
     # portfolio_total_cost = 0   #  ajouter la notion de cout du portefeuille dans le calcul de l'indice ? si oui comment ?
     for action in portfolio:
-        print(action['roi'])  # à enlever ensuite
+        print(f"Action Name: {action['name']} , Cost: {action['cost']}, ROI: {action['roi']}")  # à enlever ensuite
         actions_roi_sum += action['roi']
-        # print(action['cost'])
         # portfolio_total_cost += action['cost']
     portfolio_average_roi = actions_roi_sum / len(portfolio)
-
-    print(portfolio_average_roi)  # à enlever ensuite
+    print(f"Portfolio Average ROI: {portfolio_average_roi}\n")  # à enlever ensuite
     return portfolio_average_roi
 
 
-def get_all_possible_portfolios(actions_list: list[dict]) -> list[tuple]:  # à retravailler
+def get_all_possible_portfolios(actions_list: list[dict], replacement: bool = False) -> list[tuple]:  # à retravailler
     """
-    returns all possible combinations of actions under the given criteria:
+    Returns all possible combinations of actions under the given criteria:
     - cost of portfolio under 500€
     - Actions only buyable once
+    Give the possibility to choose whether an action can be
+    bought several times (if needed later for evolution)
     """
     all_possible_portfolios = []
-    for actions_amount in range(1, 4): # à changer pour 21(pour arriver à 20 actions !) (tester en changeant les ranges de 1 à 21
-        generator = combinations(actions_list, actions_amount)
+    for actions_amount in range(1, 3): # à changer pour (1, 21) (pour arriver à 20 actions !) (tester en changeant les ranges de 1 à 21
+        if replacement:
+            generator = combinations_with_replacement(actions_list, actions_amount)
+        else:
+            generator = combinations(actions_list, actions_amount)
         for portfolio in generator:
             portfolio_total_cost = 0
             for action in portfolio:
@@ -69,7 +72,7 @@ def get_all_possible_portfolios(actions_list: list[dict]) -> list[tuple]:  # à 
                     print(len(portfolio))  # à enlever ensuite
                 else:
                     print(f'this portfolio represents more than 500€ investment: {portfolio_total_cost}€')
-    print(len(all_possible_portfolios))  # à enlever ensuite
+    print(f'Amount of Possible Portfolios: {len(all_possible_portfolios)}')  # à enlever ensuite
     return all_possible_portfolios
 
 
@@ -124,13 +127,13 @@ double = lambda x: x * 2
 print(double(5))
 """
 
-# tests
+# test samples
 actions = sample_values.actions_list
 test_portfolio = sample_values.test_portfolio
 
 
 # functions execution
-#portfolios = get_all_possible_portfolios(actions)
-find_best_portfolio(actions)
+portfolios = get_all_possible_portfolios(actions)
+#find_best_portfolio(actions)
 #for portfolio in portfolios:
-#    get_average_roi(portfolio)
+#   get_average_roi(portfolio)
