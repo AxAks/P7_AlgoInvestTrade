@@ -1,5 +1,5 @@
 from itertools import combinations, combinations_with_replacement
-from typing import Union
+from typing import Union, Callable, Any
 
 from tests import sample_values
 
@@ -70,21 +70,12 @@ def get_portfolio_cost(portfolio: tuple):
     return portfolio_cost
 
 
-def filter_cost_acceptable_portfolio(portfolio: tuple):
+
+def filter_cost_acceptable_portfolio(cost: float) -> bool: # peut etre enlevé car on utilise une lambda !
     """
     Checks whether a portfolio is under 500€ or not
-    :param portfolio:
-    :return:
     """
-    portfolio_cost = get_portfolio_cost(portfolio)
-    if portfolio_cost <= 500:
-        print(f'Great Portfolio under 500€: {portfolio_cost}€')
-        print(portfolio)  # à enlever ensuite
-        print(len(portfolio))  # à enlever ensuite
-        return portfolio
-    else:
-        print(f'this portfolio represents more than 500€ investment: {portfolio_cost}€')
-        return False
+    return cost <= 500
 
 
 def save_best_portfolio(all_acceptable_portfolios):
@@ -110,7 +101,8 @@ def save_best_portfolio(all_acceptable_portfolios):
                 # si le deuxieme a un meilleur indice de rentabilité remplacer le portefeuille enregistré dans le fichier
 
 
-def find_best_portfolio(shares_list: list[dict], replacement: bool = False) -> list[tuple]:  # à retravailler
+def find_best_portfolio(shares_list: list[dict], strength: int, filter: Callable[[Any], bool], score: Callable[[Any], float],
+                        replacement: bool = False) -> list[tuple]:  # à retravailler
     """
     Returns all possible combinations of shares under the given criteria:
     - Cost of portfolio under 500€
@@ -119,29 +111,29 @@ def find_best_portfolio(shares_list: list[dict], replacement: bool = False) -> l
     Give the possibility to choose whether an share can be
     bought several times (if needed later for evolution)
     """
-    for shares_amount in range(1, 2):
+    for shares_amount in range(1, strength):
     #  à changer pour (1, 21) (pour arriver à 20 shares !) (tester en changeant les ranges de 1 à 21
         if replacement:
             generator = combinations_with_replacement(shares_list, shares_amount)  # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
+
         all_acceptable_portfolios = []
         for portfolio in generator:
             if portfolio:
-                all_acceptable_portfolios.append(filter_cost_acceptable_portfolio(portfolio))
+                cost = get_portfolio_cost(portfolio)
+                if filter(cost):
+                    all_acceptable_portfolios.append(portfolio)
         print(f'Amount of Possible Portfolios: {len(all_acceptable_portfolios)}\n')  # à enlever ensuite
-        for portfolio in all_acceptable_portfolios:
-            get_portfolio_roi_cost_index(portfolio)
+
+        with open('tests/test.txt', 'r+') as file:
+            previous_portfolio = file.read()
+            print(previous_portfolio)
+            for portfolio in all_acceptable_portfolios:
+                portfolio_score = score(portfolio)
+
     return all_acceptable_portfolios
 
-
-"""
-# Example
-# Program to show the use of lambda functions
-
-double = lambda x: x * 2
-print(double(5))
-"""
 
 # test samples
 shares = sample_values.shares_list
@@ -150,8 +142,9 @@ test_portfolio = sample_values.test_portfolio
 
 # functions execution
 # portfolios = \
-find_best_portfolio(shares)
+find_best_portfolio(shares, 15, lambda x: x <= 500, get_portfolio_average_roi)
 
-#find_best_portfolio(shares)
-#for portfolio in portfolios:
+score: Callable[[Any], float]
+# find_best_portfolio(shares)
+# for portfolio in portfolios:
 #    get_portfolio_roi_cost_index(portfolio)
