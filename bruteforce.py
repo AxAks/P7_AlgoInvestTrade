@@ -96,7 +96,7 @@ def deserialize(portfolio_str: str) -> tuple:
     gets a string with the shares names of a portfolio
     and transforms them as a portfolio of shares object with the values : cost and roi
     """
-    return tuple(portfolio_str)
+
 
 
 def serialize(portfolio: tuple) -> str:
@@ -191,9 +191,10 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 # portfolios = \
 ## find_best_portfolio(shares, 2, lambda x: x <= 500, get_portfolio_average_roi)
 print('Serialized')
-print(serialize(test_portfolio_to_serialize))
+portfolio_str = serialize(test_portfolio_to_serialize)
+print(portfolio_str)
 print('Deserialized')
-print(deserialize(test_portfolio_to_serialize))
-# find_best_portfolio(shares)
+deserialized_portfolio = deserialize(portfolio_str)
+print(deserialized_portfolio)  # find_best_portfolio(shares)
 # for portfolio in portfolios:
 #    get_portfolio_roi_cost_index(portfolio)
