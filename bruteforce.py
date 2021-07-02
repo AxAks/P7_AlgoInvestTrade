@@ -81,7 +81,17 @@ def filter_cost_acceptable_portfolio(cost: float) -> bool: # peut etre enlevé 
     return cost <= 500
 
 
-def load(portfolio_str: str) -> dict:
+def new_high_score(new_score: float, previous_score: float) -> bool:
+    """
+    checks whether the new portfolio score is higher
+    than the previously registered portfolio score
+    """
+    # >= on a le meme ROI mais avec plus d'actions
+    # > -> on a le meme ROI avec un nombre d'actions moindre
+    return new_score > previous_score
+
+
+def deserialize(portfolio_str: str[list[str]]) -> tuple[dict]:
     """
     gets a string with the shares names of a portfolio
     and transforms them as a portfolio of shares object with the values : cost and roi
@@ -89,12 +99,13 @@ def load(portfolio_str: str) -> dict:
     pass
 
 
-def save(portfolio: dict) -> str:
+def serialize(portfolio: tuple[dict]) -> str[list[str]]:
+    #  str de list de str ... / verifier le resultat quand on deserialise ...
     """
     gets a portfolio of shares with the values : name, cost and roi
     and transforms it into a string with the shares names of a portfolio
     """
-    pass
+    return str([str(share['name']) for share in portfolio])
 
 
 def save_best_portfolio(all_acceptable_portfolios):
@@ -147,22 +158,25 @@ def find_best_portfolio(shares_list: list[dict],
                     all_acceptable_portfolios.append(portfolio)
 
         with open('tests/test.txt', 'r') as file:
-            previous_portfolio_str = file.read() # -> ce sera un string avec seulement les Nom d'actions, il faut deserialiser pour obtenir les autres valeurs
-            previous_portfolio = load(previous_portfolio_str)
-            previous_portfolio_score = score(previous_portfolio)
-            #  dans le fichier on va enregistrer une liste.
-            #  mais on veut comparer des scores de liste.
-            #  Il faut une étape intermediare : pouvoir passer d'un portefeuille à un score, et du
-            print(previous_portfolio)
-            print(previous_portfolio_score)
+            # previous_portfolio_str = file.read() # -> ce sera un string avec seulement les Nom d'actions, il faut deserialiser pour obtenir les autres valeurs
             for portfolio in all_acceptable_portfolios:
+                previous_portfolio_str = file.read()
                 portfolio_score = score(portfolio)
+                if previous_portfolio_str == '':      # si string vide '' ?, gerer le cas !
+                    print('oups')
+                else:
+                    previous_portfolio = deserialize(previous_portfolio_str)  # deserialized pas encore ecrit
+                    previous_portfolio_score = score(previous_portfolio)
+                    #  dans le fichier on va enregistrer une liste.
+                    #  mais on veut comparer des scores de liste.
+                    #  Il faut une étape intermediare : pouvoir passer d'un portefeuille à un score, et du
+                    print(previous_portfolio)
+                    print(previous_portfolio_score)
 
-            if portfolio_score > previous_portfolio_score or previous_portfolio_str == '':
-                with open('tests/test.txt', 'w') as file:
-                    file.write(save(portfolio))
-                    print("the new portfolio is better than the previous one, let's keep it !")
-                    pass
+                if new_high_score(previous_portfolio_score, portfolio_score) or previous_portfolio_str == '':
+                    with open('tests/test.txt', 'w') as file:
+                        file.write(serialize(portfolio))
+                        print("the new portfolio is better than the previous one, let's keep it !")
 
     print(f'Amount of Possible Portfolios: {len(all_acceptable_portfolios)}\n')  # à enlever ensuite
     return all_acceptable_portfolios
@@ -171,12 +185,12 @@ def find_best_portfolio(shares_list: list[dict],
 # test samples
 shares = sample_values.shares_list
 test_portfolio = sample_values.test_portfolio
-
+test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-find_best_portfolio(shares, 2, lambda x: x <= 500, get_portfolio_average_roi)
-
+## find_best_portfolio(shares, 2, lambda x: x <= 500, get_portfolio_average_roi)
+serialize(test_portfolio_to_serialize)
 # find_best_portfolio(shares)
 # for portfolio in portfolios:
 #    get_portfolio_roi_cost_index(portfolio)
