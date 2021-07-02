@@ -91,15 +91,15 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def deserialize(portfolio_str: str[list[str]]) -> tuple[dict]:
+def deserialize(portfolio_str: str) -> tuple:
     """
     gets a string with the shares names of a portfolio
     and transforms them as a portfolio of shares object with the values : cost and roi
     """
-    pass
+    return tuple(portfolio_str)
 
 
-def serialize(portfolio: tuple[dict]) -> str[list[str]]:
+def serialize(portfolio: tuple) -> str:
     #  str de list de str ... / verifier le resultat quand on deserialise ...
     """
     gets a portfolio of shares with the values : name, cost and roi
@@ -190,7 +190,10 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 # functions execution
 # portfolios = \
 ## find_best_portfolio(shares, 2, lambda x: x <= 500, get_portfolio_average_roi)
-serialize(test_portfolio_to_serialize)
+print('Serialized')
+print(serialize(test_portfolio_to_serialize))
+print('Deserialized')
+print(deserialize(test_portfolio_to_serialize))
 # find_best_portfolio(shares)
 # for portfolio in portfolios:
 #    get_portfolio_roi_cost_index(portfolio)
