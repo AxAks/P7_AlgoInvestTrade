@@ -75,13 +75,6 @@ def get_portfolio_cost(portfolio: tuple):
     return portfolio_cost
 
 
-def filter_cost_acceptable_portfolio(cost: float) -> bool: # peut etre enlevé car on utilise une lambda !
-    """
-    Checks whether a portfolio is under 500€ or not
-    """
-    return cost <= 500
-
-
 def new_high_score(new_score: float, previous_score: float) -> bool:
     """
     checks whether the new portfolio score is higher
@@ -106,15 +99,13 @@ def deserialize(portfolio_str: str, shares_list: list) -> tuple:
 
 
 def serialize(portfolio: tuple) -> str:
-    #  str de list de str ... / verifier le resultat quand on deserialise ...
     """
     gets a portfolio of shares with the values : name, cost and roi
     and transforms it into a string with the shares names of a portfolio
     """
-    chars_to_remove = re.compile(r"^[' \[,\]]+$")
     portfolio_str = str([str(share['name']) for share in portfolio])
-    portfolio_str = re.sub(chars_to_remove, '', portfolio_str)
-    return portfolio_str
+    cleaned_portfolio_str = re.sub(r"'| |\[|,|]", '', portfolio_str)
+    return cleaned_portfolio_str
 
 
 def save_best_portfolio(all_acceptable_portfolios):
@@ -140,9 +131,9 @@ def save_best_portfolio(all_acceptable_portfolios):
                 # si le deuxieme a un meilleur indice de rentabilité remplacer le portefeuille enregistré dans le fichier
 
 
-def find_best_portfolio(shares_list: list[dict],
-                        strength: int, filter: Callable[[Any], bool], score: Callable[[Any], float],
-                        replacement: bool = False) -> list[tuple]:  # à retravailler
+def main(shares_list: list[dict],
+                        scan_begin: int, scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
+                        replacement: bool = False, secure: bool = False) -> list[tuple]:  # à retravailler
     """
     Returns all possible combinations of shares under the given criteria:
     - Cost of portfolio under 500€
@@ -150,22 +141,49 @@ def find_best_portfolio(shares_list: list[dict],
     - Share cannot be sold partially
     Give the possibility to choose whether an share can be
     bought several times (if needed later for evolution)
+    By default, the best result is saved in a variable,
+    the Option Secure enables to save the result in a .txt file
     """
-    for shares_amount in range(strength):  # attention strength = 21 s'il y a 20 action, c'est exclusif
+    for shares_amount in range(scan_begin, scan_strength):  # attention strength = 21 s'il y a 20 action, c'est exclusif
         if replacement:
             generator = combinations_with_replacement(shares_list, shares_amount)  # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
 
-        all_acceptable_portfolios = []
-        for portfolio in generator:
-            if portfolio:
-                #  pour la premiere, boucle jai un tuple mais vide
-                #  je ne veux pas le prendre en compte mais du coup ca se gere pas avec un boolean
+        best_portfolio = ({})
+        if not secure:  # sauvegarde dans une variable
+            for portfolio in generator:
                 cost = get_portfolio_cost(portfolio)
-                if filter(cost):
-                    all_acceptable_portfolios.append(portfolio)
+                print(f'Portfolio cost: {cost}')
+                if _filter(cost):
+                    print(f'This Portfolio is acceptable: {portfolio} for {cost}€ '
+                          f'and a ROI of {get_portfolio_average_roi(portfolio)*100}%.\n'
+                          f'Let\'s compare it')
+                if best_portfolio == ({}):
+                    best_portfolio = portfolio
+                    print(f'First Portfolio, automatically added: {best_portfolio}')
+                else:
+                    best_portfolio_score = score(best_portfolio)
+                    portfolio_score = score(portfolio)
+                    print(f'Previous Portfolio: {best_portfolio_score} -VS- Current Portfolio: {portfolio_score}')
+                    if new_high_score(portfolio_score, best_portfolio_score):
+                        best_portfolio = portfolio
+                        print(f'New best Portfolio found: {best_portfolio}')
+    print(f'Here is the Best Possible Portfolio of all : {best_portfolio}')
+    return best_portfolio
 
+
+
+    """
+    if portfolio != tuple([]):
+        print(portfolio)
+        #  pour la premiere, boucle jai un tuple mais vide
+        #  je ne veux pas le prendre en compte mais du coup ca se gere pas avec un boolean
+    """
+
+
+    """
+    if secure:  # sauvegarde dans un fichier
         with open('tests/test.txt', 'r') as file:
             # previous_portfolio_str = file.read() # -> ce sera un string avec seulement les Nom d'actions, il faut deserialiser pour obtenir les autres valeurs
             for portfolio in all_acceptable_portfolios:
@@ -186,9 +204,11 @@ def find_best_portfolio(shares_list: list[dict],
                     with open('tests/test.txt', 'w') as file:
                         file.write(serialize(portfolio))
                         print("the new portfolio is better than the previous one, let's keep it !")
-
+        else:
+            pass
     print(f'Amount of Possible Portfolios: {len(all_acceptable_portfolios)}\n')  # à enlever ensuite
     return all_acceptable_portfolios
+    """
 
 
 # test samples
@@ -198,12 +218,14 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-## find_best_portfolio(shares, 2, lambda x: x <= 500, get_portfolio_average_roi)
+main(shares, 1, 2, lambda x: x <= 500, get_portfolio_average_roi, secure=False)
+"""
 print('Serialized')
 portfolio_str = serialize(test_portfolio_to_serialize)
 print(portfolio_str)
 print('Deserialized')
-deserialized_portfolio = deserialize('AZERT', sample_values.shares_list)
+deserialized_portfolio = deserialize(portfolio_str, sample_values.shares_list)
 print(deserialized_portfolio)  # find_best_portfolio(shares)
+"""
 # for portfolio in portfolios:
 # get_portfolio_roi_cost_index(portfolio)
