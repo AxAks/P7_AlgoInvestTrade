@@ -114,3 +114,12 @@ test_portfolio2 = (
     {'name': 'K', 'cost': 42, 'roi': 0.17},
     {'name': 'L', 'cost': 110, 'roi': 0.09}
 )
+
+test_portfolio3 = (
+    {'name': 'R', 'cost': 10, 'roi': 0.14},
+    {'name': 'S', 'cost': 24, 'roi': 0.21},
+    {'name': 'T', 'cost': 114, 'roi': 0.18},
+    {'name': 'J', 'cost': 34, 'roi': 0.27},
+    {'name': 'K', 'cost': 42, 'roi': 0.17},
+    {'name': 'L', 'cost': 110, 'roi': 0.09}
+)

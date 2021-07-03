@@ -1,3 +1,4 @@
+import re
 from itertools import combinations, combinations_with_replacement
 from typing import Union, Callable, Any
 
@@ -91,12 +92,17 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def deserialize(portfolio_str: str) -> tuple:
+def deserialize(portfolio_str: str, shares_list: list) -> tuple:
     """
     gets a string with the shares names of a portfolio
     and transforms them as a portfolio of shares object with the values : cost and roi
     """
-
+    deserialized_portfolio = []
+    for char in portfolio_str:
+        for share in shares_list:
+            if char in share.values():
+                deserialized_portfolio.append(share)
+    return tuple(deserialized_portfolio)
 
 
 def serialize(portfolio: tuple) -> str:
@@ -105,9 +111,10 @@ def serialize(portfolio: tuple) -> str:
     gets a portfolio of shares with the values : name, cost and roi
     and transforms it into a string with the shares names of a portfolio
     """
-    #  tres moche !
-    return str([str(share['name']) for share in portfolio]).\
-        replace('\'', '').replace(',', '').replace(' ', '').replace('[', '').replace(']', '')
+    chars_to_remove = re.compile(r"^[' \[,\]]+$")
+    portfolio_str = str([str(share['name']) for share in portfolio])
+    portfolio_str = re.sub(chars_to_remove, '', portfolio_str)
+    return portfolio_str
 
 
 def save_best_portfolio(all_acceptable_portfolios):
@@ -196,7 +203,7 @@ print('Serialized')
 portfolio_str = serialize(test_portfolio_to_serialize)
 print(portfolio_str)
 print('Deserialized')
-deserialized_portfolio = deserialize(portfolio_str)
+deserialized_portfolio = deserialize('AZERT', sample_values.shares_list)
 print(deserialized_portfolio)  # find_best_portfolio(shares)
 # for portfolio in portfolios:
 # get_portfolio_roi_cost_index(portfolio)
