@@ -106,7 +106,8 @@ def serialize(portfolio: tuple) -> str:
     and transforms it into a string with the shares names of a portfolio
     """
     #  tres moche !
-    return str([str(share['name']) for share in portfolio]).replace('\'', '').replace(',', '-').replace(' ', '')
+    return str([str(share['name']) for share in portfolio]).\
+        replace('\'', '').replace(',', '').replace(' ', '').replace('[', '').replace(']', '')
 
 
 def save_best_portfolio(all_acceptable_portfolios):
