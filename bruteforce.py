@@ -105,7 +105,8 @@ def serialize(portfolio: tuple) -> str:
     gets a portfolio of shares with the values : name, cost and roi
     and transforms it into a string with the shares names of a portfolio
     """
-    return str([str(share['name']) for share in portfolio])
+    #  tres moche !
+    return str([str(share['name']) for share in portfolio]).replace('\'', '').replace(',', '-').replace(' ', '')
 
 
 def save_best_portfolio(all_acceptable_portfolios):
@@ -197,4 +198,4 @@ print('Deserialized')
 deserialized_portfolio = deserialize(portfolio_str)
 print(deserialized_portfolio)  # find_best_portfolio(shares)
 # for portfolio in portfolios:
-#    get_portfolio_roi_cost_index(portfolio)
+# get_portfolio_roi_cost_index(portfolio)
