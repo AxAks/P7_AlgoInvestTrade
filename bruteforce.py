@@ -86,6 +86,17 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
+def read_file() -> str:
+    with open('tests/test.txt', 'r') as file:
+        content = file.read()
+    return content
+
+
+def write_file(_input : str) -> None:
+    with open('tests/test.txt', 'w') as file:
+        file.write(_input)
+
+
 def deserialize(portfolio_str: str, shares_list: list) -> tuple:
     """
     gets a string with the shares names of a portfolio
@@ -158,15 +169,13 @@ def main(shares_list: list[dict],
         if not secure:  # sauvegarde dans une variable
             for portfolio in generator:
                 cost = get_portfolio_cost(portfolio)
-                if cost <= 500:
-                    print(f'ICIIIIII !!!!  HELLLO !!! -> Nb Shares: {len(portfolio)}, Cost: {cost}, YEEEEEEEEEEEEES!')
-                if _filter(cost):
+                if _filter(cost):  # pb algo autour de shares_amount = 15,16,17,18+
                     print(f'Portfolio cost: {cost}')
                     acceptable_cost = cost
                     print(f'This Portfolio is acceptable: {portfolio} for {acceptable_cost}€ '
                           f'and a ROI of {get_portfolio_average_roi(portfolio)*100}%.\n'
                           f'Let\'s compare it')
-                    if best_portfolio == ({}):
+                    if not best_portfolio:
                         best_portfolio = portfolio
                         best_portfolio_cost = acceptable_cost
                         print(f'First Portfolio, automatically added: {best_portfolio}')
@@ -192,8 +201,48 @@ def main(shares_list: list[dict],
                       f' - Portfolio Details: {best_portfolio}\n'
                       f' - Portfolio average ROI after 2 years: {best_portfolio_score * 100}%')
 
-        if secure:
-            pass
+        if secure:  # sauvegarde dans un fichier
+            registered_portfolio_str = read_file()
+            best_portfolio = deserialize(registered_portfolio_str, shares)
+
+            for portfolio in generator:
+                cost = get_portfolio_cost(portfolio)
+                if _filter(cost):
+                    print(f'Portfolio cost: {cost}')
+                    acceptable_cost = cost
+                    print(f'This Portfolio is acceptable: {portfolio} for {acceptable_cost}€ '
+                          f'and a ROI of {get_portfolio_average_roi(portfolio) * 100}%.\n'
+                          f'Let\'s compare it')
+                    if not best_portfolio:
+                        best_portfolio = portfolio
+                        best_portfolio_str = serialize(best_portfolio)
+                        write_file(best_portfolio_str)
+                        best_portfolio_cost = acceptable_cost
+                        print(f'First Portfolio, automatically added: {best_portfolio}')
+                    else:
+                        best_portfolio_score = score(best_portfolio)
+                        portfolio_score = score(portfolio)
+                        print(
+                            f'Previous Portfolio: {best_portfolio_score}% -VS- Current Portfolio: {portfolio_score}%')
+                        if new_high_score(portfolio_score, best_portfolio_score):
+                            best_portfolio = portfolio
+                            best_portfolio_str = serialize(best_portfolio)
+                            write_file(best_portfolio_str)
+                            best_portfolio_cost = acceptable_cost
+                            print(f'New best Portfolio found: {best_portfolio}')
+                else:
+                    print(f'Portfolio cost: {cost}')
+                    print(f'This Portfolio is NOT acceptable: {portfolio} for {cost}€\n'
+                          f'Let\'s DROP it, Next !')
+
+            if not best_portfolio:
+                print('No portfolio was found under the investment limit !')
+            else:
+                print(f'Here is the Best Possible Portfolio of all :\n'
+                      f' - Amount of shares: {len(best_portfolio)}\n'
+                      f' - Portfolio Cost: {best_portfolio_cost}\n'
+                      f' - Portfolio Details: {best_portfolio}\n'
+                      f' - Portfolio average ROI after 2 years: {best_portfolio_score * 100}%')
 
     execution_time = datetime.now() - timer_0
     print(f' Execution Time = {execution_time}')
@@ -245,7 +294,7 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-main(shares, 16, 18, lambda x: x <= 500, get_portfolio_average_roi, secure=False)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
+main(shares, 1, 4, lambda x: x <= 500, get_portfolio_average_roi, secure=True)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
 #  15-16 OK, 15-17 OK -> best portfolio trouvé , 15-18 NOT OK -> pas de portfolio trouvé en dessous de 500€ !!!! why
 """
 print('Serialized')
