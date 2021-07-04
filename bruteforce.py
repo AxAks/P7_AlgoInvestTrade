@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Union, Callable, Any
 
@@ -55,9 +56,9 @@ def get_portfolio_average_roi(portfolio: tuple):
     """
     shares_roi_sum = 0
     for share in portfolio:
-        print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
+        #  print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
         shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 4)
+        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
     return portfolio_average_roi
 
 
@@ -104,7 +105,7 @@ def serialize(portfolio: tuple) -> str:
     and transforms it into a string with the shares names of a portfolio
     """
     portfolio_str = str([str(share['name']) for share in portfolio])
-    cleaned_portfolio_str = re.sub(r"'| |\[|,|]", '', portfolio_str)
+    cleaned_portfolio_str = re.sub(r"'| |\[|,|]", '', portfolio_str) # mettre un separateur ex : "-" , si actions nommées AB, AC, etc .. (plus de 26 actions diffs)
     return cleaned_portfolio_str
 
 
@@ -144,6 +145,7 @@ def main(shares_list: list[dict],
     By default, the best result is saved in a variable,
     the Option Secure enables to save the result in a .txt file
     """
+    timer_0 = datetime.now()
     for shares_amount in range(scan_begin, scan_strength):  # attention strength = 21 s'il y a 20 action, c'est exclusif
         if replacement:
             generator = combinations_with_replacement(shares_list, shares_amount)  # facultatif, par défaut en False
@@ -151,25 +153,50 @@ def main(shares_list: list[dict],
             generator = combinations(shares_list, shares_amount)
 
         best_portfolio = ({})
+        best_portfolio_cost = 0
+        best_portfolio_score = 0.0
         if not secure:  # sauvegarde dans une variable
             for portfolio in generator:
                 cost = get_portfolio_cost(portfolio)
-                print(f'Portfolio cost: {cost}')
+                if cost <= 500:
+                    print(f'ICIIIIII !!!!  HELLLO !!! -> Nb Shares: {len(portfolio)}, Cost: {cost}, YEEEEEEEEEEEEES!')
                 if _filter(cost):
-                    print(f'This Portfolio is acceptable: {portfolio} for {cost}€ '
+                    print(f'Portfolio cost: {cost}')
+                    acceptable_cost = cost
+                    print(f'This Portfolio is acceptable: {portfolio} for {acceptable_cost}€ '
                           f'and a ROI of {get_portfolio_average_roi(portfolio)*100}%.\n'
                           f'Let\'s compare it')
-                if best_portfolio == ({}):
-                    best_portfolio = portfolio
-                    print(f'First Portfolio, automatically added: {best_portfolio}')
-                else:
-                    best_portfolio_score = score(best_portfolio)
-                    portfolio_score = score(portfolio)
-                    print(f'Previous Portfolio: {best_portfolio_score} -VS- Current Portfolio: {portfolio_score}')
-                    if new_high_score(portfolio_score, best_portfolio_score):
+                    if best_portfolio == ({}):
                         best_portfolio = portfolio
-                        print(f'New best Portfolio found: {best_portfolio}')
-    print(f'Here is the Best Possible Portfolio of all : {best_portfolio}')
+                        best_portfolio_cost = acceptable_cost
+                        print(f'First Portfolio, automatically added: {best_portfolio}')
+                    else:
+                        best_portfolio_score = score(best_portfolio)
+                        portfolio_score = score(portfolio)
+                        print(f'Previous Portfolio: {best_portfolio_score}% -VS- Current Portfolio: {portfolio_score}%')
+                        if new_high_score(portfolio_score, best_portfolio_score):
+                            best_portfolio = portfolio
+                            best_portfolio_cost = acceptable_cost
+                            print(f'New best Portfolio found: {best_portfolio}')
+                else:
+                    print(f'Portfolio cost: {cost}')
+                    print(f'This Portfolio is NOT acceptable: {portfolio} for {cost}€\n'
+                          f'Let\'s DROP it, Next !')
+
+            if not best_portfolio:
+                print('No portfolio was found under the investment limit !')
+            else:
+                print(f'Here is the Best Possible Portfolio of all :\n'
+                      f' - Amount of shares: {len(best_portfolio)}\n'
+                      f' - Portfolio Cost: {best_portfolio_cost}\n'
+                      f' - Portfolio Details: {best_portfolio}\n'
+                      f' - Portfolio average ROI after 2 years: {best_portfolio_score * 100}%')
+
+        if secure:
+            pass
+
+    execution_time = datetime.now() - timer_0
+    print(f' Execution Time = {execution_time}')
     return best_portfolio
 
 
@@ -218,7 +245,8 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-main(shares, 1, 2, lambda x: x <= 500, get_portfolio_average_roi, secure=False)
+main(shares, 16, 18, lambda x: x <= 500, get_portfolio_average_roi, secure=False)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
+#  15-16 OK, 15-17 OK -> best portfolio trouvé , 15-18 NOT OK -> pas de portfolio trouvé en dessous de 500€ !!!! why
 """
 print('Serialized')
 portfolio_str = serialize(test_portfolio_to_serialize)
