@@ -57,7 +57,6 @@ def get_portfolio_average_roi(portfolio: tuple):
     """
     shares_roi_sum = 0
     for share in portfolio:
-        # print(f"Share Name: {share['name']} , Cost: {share['cost']}, ROI: {share['roi']}")  # à enlever ensuite
         shares_roi_sum += share['roi']
         portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
     return portfolio_average_roi
@@ -127,10 +126,7 @@ def main(shares_list: list[dict],
     the Option Secure enables to save the result in a .txt file
     """
     timer_0 = datetime.now()
-    """
-    if not secure:
-        #sauvegarde juste dans une variable
-    """
+
     best_portfolio = ({})
     best_portfolio_cost = 0.0
     best_portfolio_roi = 0.0
@@ -159,7 +155,7 @@ def main(shares_list: list[dict],
                 portfolio_roi = get_portfolio_average_roi(portfolio)
                 print(f'This Portfolio is acceptable: {portfolio} for {acceptable_cost}€ '
                       f'a ROI of {portfolio_roi * 100}%.\n'
-                      f'That is : {get_portfolio_net_roi(portfolio)}€\n')
+                      f'That is : {round(get_portfolio_net_roi(portfolio),2)}€\n')
                 if not best_portfolio:
                     best_portfolio = portfolio
                     best_portfolio_cost = acceptable_cost
@@ -181,42 +177,28 @@ def main(shares_list: list[dict],
                             write_file(serialize(best_portfolio))
 
             else:
-                print(f'Portfolio cost: {cost}')
                 print(f'This Portfolio is NOT acceptable: {portfolio} for {cost}€\n'
-                      f'Let\'s DROP it, Next !')
+                      f'DROP !')
 
     if best_portfolio:
         print(f'Here is the Best Possible Portfolio of all:\n'
               f'- Amount of shares: {len(best_portfolio)}\n'
               f'- Portfolio Cost: {best_portfolio_cost}\n'
               f'- Portfolio Details: {best_portfolio}\n'
-              f'- Portfolio average ROI in % after 2 years: {best_portfolio_roi}%'
+              f'- Portfolio average ROI in % after 2 years: {round(best_portfolio_roi * 100, 2)}%'
               f'- Portfolio average ROI after 2 years: {best_portfolio_score}€')
     else:
         print('No portfolio was found under the investment limit !')
 
     execution_time = datetime.now() - timer_0
     print(f' Execution Time = {execution_time}')
+
     return best_portfolio
 
 
 # test samples
 shares = sample_values.shares_list
-test_portfolio = sample_values.test_portfolio
-test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
-# portfolios = \
 main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
 #  min et max ne peuvent pas etre egaux ca incl et excl
-
-"""
-print('Serialized')
-portfolio_str = serialize(test_portfolio_to_serialize)
-print(portfolio_str)
-print('Deserialized')
-deserialized_portfolio = deserialize(portfolio_str, sample_values.shares_list)
-print(deserialized_portfolio)  # find_best_portfolio(shares)
-"""
-# for portfolio in portfolios:
-# get_portfolio_roi_cost_index(portfolio)
