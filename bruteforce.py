@@ -169,7 +169,6 @@ def main(shares_list: list[dict],
         best_portfolio = deserialize(read_file(), shares)
         for shares_amount in range(scan_begin,
                                    scan_strength):  # attention strength = 21 s'il y a 20 action, c'est exclusif
-            best_portfolio = deserialize(read_file(), shares)
             if replacement:
                 generator = combinations_with_replacement(shares_list,
                                                           shares_amount)  # facultatif, par défaut en False
@@ -225,15 +224,16 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-# main(shares, 3, 4, lambda x: x <= 500, get_portfolio_average_roi, secure=True)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
+main(shares, 1, 4, lambda x: x <= 500, get_portfolio_average_roi, secure=True)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
 #  15-16 OK, 15-17 OK -> best portfolio trouvé , 15-18 NOT OK -> pas de portfolio trouvé en dessous de 500€ !!!! why
 
+"""
 print('Serialized')
 portfolio_str = serialize(test_portfolio_to_serialize)
 print(portfolio_str)
 print('Deserialized')
 deserialized_portfolio = deserialize(portfolio_str, sample_values.shares_list)
 print(deserialized_portfolio)  # find_best_portfolio(shares)
-
+"""
 # for portfolio in portfolios:
 # get_portfolio_roi_cost_index(portfolio)
