@@ -98,7 +98,7 @@ def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
     deserialized_portfolio = []
     for share_name in portfolio_str.split('-'):
         for share in shares_list:
-            if share_name in share['name']:
+            if share_name in share['name'] and share_name != '':
                 deserialized_portfolio.append(share)
     return tuple(deserialized_portfolio)
 
@@ -131,6 +131,10 @@ def main(shares_list: list[dict],
     if not secure:
         #sauvegarde juste dans une variable
     """
+    best_portfolio = ({})
+    best_portfolio_cost = 0.0
+    best_portfolio_roi = 0.0
+    best_portfolio_score = 0.0
     if secure:
         # sauvegarde dans un fichier
         best_portfolio = deserialize(read_file(), shares)
@@ -138,17 +142,6 @@ def main(shares_list: list[dict],
             best_portfolio_cost = get_portfolio_cost(best_portfolio)
             best_portfolio_roi = get_portfolio_average_roi(best_portfolio)
             best_portfolio_score = score(best_portfolio)
-        else:
-            best_portfolio_cost = 0.0
-            best_portfolio_roi = 0.0
-            best_portfolio_score = 0.0
-
-    else:
-        # sauvegarde juste dans une variable
-        best_portfolio = ({})
-        best_portfolio_cost = 0.0
-        best_portfolio_roi = 0.0
-        best_portfolio_score = 0.0
 
     for shares_amount in range(scan_begin, scan_strength):
         # attention strength = 21 s'il y a 20 action, c'est exclusif
@@ -214,7 +207,7 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-main(shares, 16, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
+main(shares, 16, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
 #  min et max ne peuvent pas etre egaux ca incl et excl
 
 """
