@@ -77,7 +77,7 @@ def read_file() -> str:
     """
     enables to read the file to load data
     """
-    with open('tests/test.txt', 'r') as file:
+    with open('tests/results_save.txt', 'r') as file:
         content = file.read()
     return content
 
@@ -86,7 +86,7 @@ def write_file(_input : str) -> None:
     """
     enables to write to the file to save data
     """
-    with open('tests/test.txt', 'w') as file:
+    with open('tests/results_save.txt', 'w') as file:
         file.write(_input)
 
 
@@ -207,7 +207,7 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-main(shares, 16, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
 #  min et max ne peuvent pas etre egaux ca incl et excl
 
 """
