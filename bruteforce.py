@@ -214,8 +214,8 @@ test_portfolio_to_serialize = sample_values.test_portfolio2
 
 # functions execution
 # portfolios = \
-main(shares, 16, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)  # min et max ne peuvent pas etre egaux ca incl et excl pb autour de 17
-#  15-16 OK, 15-17 OK -> best portfolio trouvé , 15-18 NOT OK -> pas de portfolio trouvé en dessous de 500€ !!!! why
+main(shares, 16, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
+#  min et max ne peuvent pas etre egaux ca incl et excl
 
 """
 print('Serialized')
