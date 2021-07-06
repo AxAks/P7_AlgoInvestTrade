@@ -76,7 +76,7 @@ def read_file() -> str:
     """
     enables to read the file to load data
     """
-    with open('tests/results_save.txt', 'r') as file:
+    with open('results_save.txt', 'r') as file:
         content = file.read()
     return content
 
@@ -85,7 +85,7 @@ def write_file(_input : str) -> None:
     """
     enables to write to the file to save data
     """
-    with open('tests/results_save.txt', 'w') as file:
+    with open('results_save.txt', 'w') as file:
         file.write(_input)
 
 
@@ -200,5 +200,5 @@ def main(shares_list: list[dict],
 shares = sample_values.shares_list
 
 # functions execution
-main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
 #  min et max ne peuvent pas etre egaux ca incl et excl
