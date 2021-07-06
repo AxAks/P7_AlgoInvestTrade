@@ -100,6 +100,9 @@ def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
             if share_name in share['name'] and share_name != '':
                 deserialized_portfolio.append(share)
     return tuple(deserialized_portfolio)
+    # pb s'il ne trouve pas le share_name dans la liste d'actions,
+    # il ne l'ajoute pas dans le portefeuile,
+    # mais ne retourne pas d'erreur
 
 
 def serialize(portfolio: tuple) -> str:
@@ -198,7 +201,14 @@ def main(shares_list: list[dict],
 
 # test samples
 shares = sample_values.shares_list
+# Ou est ce qu'on doit recupérer la lsite des actions à traiter ?
+# depuis un fichier, code à adapter
 
+"""
 # functions execution
 main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
 #  min et max ne peuvent pas etre egaux ca incl et excl
+"""
+
+if __name__ == "__main__":
+    main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
