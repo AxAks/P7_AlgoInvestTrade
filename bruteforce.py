@@ -1,10 +1,12 @@
 import re
+import logging
 from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
 from tests import sample_values
 
+logging.basicConfig(filename="bruteforce.log", level=logging.INFO, filemode='w')
 """
 recupérer la liste des actions via l'import d'un fichier csv ? 
 """
@@ -129,18 +131,22 @@ def main(shares_list: list[dict],
     the Option Secure enables to save the result in a .txt file
     """
     timer_0 = datetime.now()
-
+    logging.info(f'Scan Start: {datetime.now()}')
     best_portfolio = ({})
     best_portfolio_cost = 0.0
     best_portfolio_roi = 0.0
     best_portfolio_score = 0.0
     if secure:
+        logging.info('Secure Mode On -> saving results in file')
         # sauvegarde dans un fichier
         best_portfolio = deserialize(read_file(), shares)
         if best_portfolio:
             best_portfolio_cost = get_portfolio_cost(best_portfolio)
             best_portfolio_roi = get_portfolio_average_roi(best_portfolio)
             best_portfolio_score = score(best_portfolio)
+
+    else:
+        logging.info('Secure Mode Off -> no writing in a file')
 
     for shares_amount in range(scan_begin, scan_strength):
         # attention strength = 21 s'il y a 20 action, c'est exclusif
@@ -150,6 +156,7 @@ def main(shares_list: list[dict],
         else:
             generator = combinations(shares_list, shares_amount)
         n = 1
+        logging.info(f'Scan Step {shares_amount}')
         for portfolio in generator:
             portfolio_str = serialize(portfolio)
             print(f'Processing Portfolio #{n} : {portfolio_str}')
@@ -194,7 +201,8 @@ def main(shares_list: list[dict],
 
     execution_time = datetime.now() - timer_0
     print(f' Execution Time = {execution_time}')
-
+    logging.info(f'Scan End: {datetime.now()}')
+    logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
     return best_portfolio
 
 
@@ -210,4 +218,4 @@ main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
 """
 
 if __name__ == "__main__":
-    main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+    main(shares, 1, 6, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
