@@ -125,27 +125,6 @@ if __name__ == "__main__":
 
 
 """
-def get_portfolio_cost(portfolio: tuple):
-    portfolio_cost = 0
-    for share in portfolio:
-        portfolio_cost += share['cost']
-    return portfolio_cost
-
-
-def get_portfolio_net_roi(portfolio: tuple):
-    cost = get_portfolio_cost(portfolio)
-    average_roi = get_portfolio_average_roi(portfolio)
-    net_roi = cost * average_roi
-    return net_roi
-
-
-def get_portfolio_average_roi(portfolio: tuple):
-    shares_roi_sum = 0
-    for share in portfolio:
-        shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
-    return portfolio_average_roi
-
 
 def new_high_score(new_score: float, previous_score: float) -> bool:
     # >= on a le meme ROI mais avec plus d'actions
@@ -180,85 +159,6 @@ def serialize(portfolio: tuple) -> str:
     portfolio_str = str([str(share['name']) for share in portfolio])
     cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
     return cleaned_portfolio_str
-
-
-def main(shares_list: list[dict],
-         scan_begin: int, scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
-         replacement: bool = False, secure: bool = False) -> list[tuple]:  # à ooptimiser !
-    timer_0 = datetime.now()
-    logging.info(f'Scan Start: {datetime.now()}')
-    best_portfolio = ({})
-    best_portfolio_cost = 0.0
-    best_portfolio_roi = 0.0
-    best_portfolio_score = 0.0
-    if secure:
-        logging.info('Secure Mode On -> saving results in file')
-        # sauvegarde dans un fichier
-        best_portfolio = deserialize(read_file(), shares)
-        if best_portfolio:
-            best_portfolio_cost = get_portfolio_cost(best_portfolio)
-            best_portfolio_roi = get_portfolio_average_roi(best_portfolio)
-            best_portfolio_score = score(best_portfolio)
-
-    else:
-        logging.info('Secure Mode Off -> no writing in a file')
-
-    for shares_amount in range(scan_begin, scan_strength):
-        # attention strength = 21 s'il y a 20 action, c'est exclusif
-        if replacement:
-            generator = combinations_with_replacement(shares_list, shares_amount)
-            # facultatif, par défaut en False
-        else:
-            generator = combinations(shares_list, shares_amount)
-        n = 1
-        logging.info(f'Scan Step {shares_amount}')
-        for portfolio in generator:
-            portfolio_str = serialize(portfolio)
-            print(f'Processing Portfolio #{n} : {portfolio_str}')
-            n += 1
-            cost = get_portfolio_cost(portfolio)
-            if _filter(cost):
-                acceptable_cost = cost
-                if not best_portfolio:
-                    best_portfolio = portfolio
-                    best_portfolio_cost = acceptable_cost
-                    best_portfolio_score = get_portfolio_net_roi(portfolio)
-                    print(f'New best Portfolio: {best_portfolio}, '
-                          f'Cost: {best_portfolio_cost} '
-                          f'Net ROI: {best_portfolio_score}')
-                    if secure:
-                        write_file(serialize(best_portfolio))
-
-                else:
-                    best_portfolio_score = round(score(best_portfolio), 2)
-                    portfolio_score = round(score(portfolio), 2)
-                    if new_high_score(portfolio_score, best_portfolio_score):
-                        best_portfolio = portfolio
-                        best_portfolio_cost = acceptable_cost
-                        best_portfolio_score = portfolio_score
-                        print(f'-> New High: {best_portfolio_score}€')
-                        if secure:
-                            write_file(serialize(best_portfolio))
-
-            else:
-                print('DROP !')
-
-    if best_portfolio:
-        print(f'\nHere is the Best Possible Portfolio of all:\n'
-              f'- Investment: {best_portfolio_cost}\n'
-              f'- Portfolio Average ROI: {round(best_portfolio_roi * 100, 2)} %\n'
-              f'- Net ROI after 2 years: {best_portfolio_score} €\n'
-              f'- Portfolio: {serialize(best_portfolio)} ({len(best_portfolio)} Shares)\n'
-              f'- Details: {best_portfolio}\n')
-
-    else:
-        print('No portfolio was found under the investment limit !')
-
-    execution_time = datetime.now() - timer_0
-    print(f' Execution Time = {execution_time}')
-    logging.info(f'Scan End: {datetime.now()}')
-    logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
-    return best_portfolio
 
 
 # test samples
