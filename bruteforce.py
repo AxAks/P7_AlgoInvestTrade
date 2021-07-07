@@ -1,12 +1,12 @@
 import re
 import logging
+
 from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
 from tests import sample_values
 
-logging.basicConfig(filename="bruteforce.log", level=logging.INFO, filemode='w')
 """
 recupérer la liste des actions via l'import d'un fichier csv ? 
 """
@@ -130,6 +130,7 @@ def main(shares_list: list[dict],
     By default, the best result is saved in a variable,
     the Option Secure enables to save the result in a .txt file
     """
+    logging.basicConfig(filename="bruteforce.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
     best_portfolio = ({})
@@ -150,13 +151,15 @@ def main(shares_list: list[dict],
 
     for shares_amount in range(scan_begin, scan_strength):
         # attention strength = 21 s'il y a 20 action, c'est exclusif
+        if shares_amount != 1:
+            logging.info(f'Latest scan step proceeded: {shares_amount - 1}')
         if replacement:
             generator = combinations_with_replacement(shares_list, shares_amount)
             # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
         n = 1
-        logging.info(f'Scan Step {shares_amount}')
+        logging.info(f'Beginning scan step {shares_amount}')
         for portfolio in generator:
             portfolio_str = serialize(portfolio)
             print(f'Processing Portfolio #{n} : {portfolio_str}')
@@ -201,6 +204,7 @@ def main(shares_list: list[dict],
 
     execution_time = datetime.now() - timer_0
     print(f' Execution Time = {execution_time}')
+    logging.info(f'Latest scan step proceeded: {shares_amount - 1}')
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
     return best_portfolio
@@ -218,4 +222,4 @@ main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
 """
 
 if __name__ == "__main__":
-    main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+    main(shares, 1, 7, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
