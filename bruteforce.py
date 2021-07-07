@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from itertools import combinations, combinations_with_replacement
-from typing import Union, Callable, Any
+from typing import Callable, Any
 
 from tests import sample_values
 
@@ -81,7 +81,7 @@ def read_file() -> str:
     return content
 
 
-def write_file(_input : str) -> None:
+def write_file(_input: str) -> None:
     """
     enables to write to the file to save data
     """
@@ -149,47 +149,46 @@ def main(shares_list: list[dict],
             # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
-
+        n = 1
         for portfolio in generator:
+            portfolio_str = serialize(portfolio)
+            print(f'Processing Portfolio #{n} : {portfolio_str}')
+            n += 1
             cost = get_portfolio_cost(portfolio)
             if _filter(cost):
-                print(f'Portfolio cost: {cost}')
                 acceptable_cost = cost
-                portfolio_roi = get_portfolio_average_roi(portfolio)
-                print(f'This Portfolio is acceptable: {portfolio} for {acceptable_cost}€ '
-                      f'a ROI of {portfolio_roi * 100}%.\n'
-                      f'That is : {round(get_portfolio_net_roi(portfolio),2)}€\n')
                 if not best_portfolio:
                     best_portfolio = portfolio
                     best_portfolio_cost = acceptable_cost
+                    best_portfolio_score = get_portfolio_net_roi(portfolio)
+                    print(f'New best Portfolio: {best_portfolio}, '
+                          f'Cost: {best_portfolio_cost} '
+                          f'Net ROI: {best_portfolio_score}')
                     if secure:
                         write_file(serialize(best_portfolio))
-                    print(f'First Portfolio, automatically added: {best_portfolio}')
+
                 else:
-                    print(f'Let\'s compare it')
                     best_portfolio_score = round(score(best_portfolio), 2)
                     portfolio_score = round(score(portfolio), 2)
-                    print(
-                        f'Previous Portfolio: {best_portfolio_score}€ -VS- Current Portfolio: {portfolio_score}€')
                     if new_high_score(portfolio_score, best_portfolio_score):
-                        print(f'New best Portfolio found: {best_portfolio}')
                         best_portfolio = portfolio
                         best_portfolio_cost = acceptable_cost
-                        best_portfolio_roi = portfolio_roi
+                        best_portfolio_score = portfolio_score
+                        print(f'-> New High: {best_portfolio_score}€')
                         if secure:
                             write_file(serialize(best_portfolio))
 
             else:
-                print(f'This Portfolio is NOT acceptable: {portfolio} for {cost}€\n'
-                      f'DROP !')
+                print('DROP !')
 
     if best_portfolio:
-        print(f'Here is the Best Possible Portfolio of all:\n'
-              f'- Amount of shares: {len(best_portfolio)}\n'
-              f'- Portfolio Cost: {best_portfolio_cost}\n'
-              f'- Portfolio Details: {best_portfolio}\n'
-              f'- Portfolio average ROI in % after 2 years: {round(best_portfolio_roi * 100, 2)}%'
-              f'- Portfolio average ROI after 2 years: {best_portfolio_score}€')
+        print(f'\nHere is the Best Possible Portfolio of all:\n'
+              f'- Investment: {best_portfolio_cost}\n'
+              f'- Portfolio Average ROI: {round(best_portfolio_roi * 100, 2)} %\n'
+              f'- Net ROI after 2 years: {best_portfolio_score} €\n'
+              f'- Portfolio: {serialize(best_portfolio)} ({len(best_portfolio)} Shares)\n'
+              f'- Details: {best_portfolio}\n')
+
     else:
         print('No portfolio was found under the investment limit !')
 
