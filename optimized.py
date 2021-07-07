@@ -33,27 +33,46 @@ maximal reste respecté.
 """
 
 
+def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:  # pas utilisé pour le moment
+    deserialized_portfolio = []
+    for share_name in portfolio_str.split('-'):
+        for share in shares_list:
+            if share_name in share['name'] and share_name != '':
+                deserialized_portfolio.append(share)
+    return tuple(deserialized_portfolio)
+    # pb s'il ne trouve pas le share_name dans la liste d'actions,
+    # il ne l'ajoute pas dans le portefeuile,
+    # mais ne retourne pas d'erreur
+
+
+def serialize(portfolio: tuple) -> str:  # pas utilisé pour le moment
+    portfolio_str = str([str(share['name']) for share in portfolio])
+    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
+    return cleaned_portfolio_str
+
+
 def fill_portfolio(sorted_shares_list: list) -> tuple:
     """
     Fill a portfolio with shares according to the space left in the portfolio
      .... (to be detailled !)
     """
-    print(sorted_shares_list)
     portfolio = []
     portfolio_cost = 0.0
-    portfolio_net_roi = 0.0
+    portfolio_average_roi = 0.0
     n = 0
-    while portfolio_cost <= 500.0:
+    while portfolio_cost <= 500.0 and n < len(sorted_shares_list):  # petit bugfix/patch rapide, à faire mieux !
         print(n)
         if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0:
             portfolio.append(sorted_shares_list[n])
         portfolio_cost = get_portfolio_cost(portfolio)
         portfolio_net_roi = round(get_portfolio_net_roi(portfolio), 2)
+        portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2) * 100
         print(portfolio)
-        print(portfolio_cost)
-        print(portfolio_net_roi)
+        print(f'{portfolio_cost} € (Cost)')
+        print(f'{portfolio_net_roi} € (ROI)')
+        print(f'{portfolio_average_roi} % (ROI)')
         n += 1
-
+        print(tuple(serialize(portfolio)))
     return tuple(portfolio)
 
 
@@ -113,9 +132,12 @@ def get_share_score(share: dict) -> float:
 
 
 def main(shares_list):
+    timer_0 = datetime.now()
     sorted_shares_list = get_sorted_shares_list(shares_list)
     final_portfolio = fill_portfolio(sorted_shares_list)
     print(final_portfolio)
+    execution_time = datetime.now() - timer_0
+    print(f' Execution Time = {execution_time}')
     return final_portfolio
 
 
@@ -143,22 +165,7 @@ def write_file(_input: str) -> None:
         file.write(_input)
 
 
-def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
-    deserialized_portfolio = []
-    for share_name in portfolio_str.split('-'):
-        for share in shares_list:
-            if share_name in share['name'] and share_name != '':
-                deserialized_portfolio.append(share)
-    return tuple(deserialized_portfolio)
-    # pb s'il ne trouve pas le share_name dans la liste d'actions,
-    # il ne l'ajoute pas dans le portefeuile,
-    # mais ne retourne pas d'erreur
 
-
-def serialize(portfolio: tuple) -> str:
-    portfolio_str = str([str(share['name']) for share in portfolio])
-    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
-    return cleaned_portfolio_str
 
 
 # test samples
