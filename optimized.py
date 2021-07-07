@@ -72,7 +72,7 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
         print(f'{portfolio_net_roi} € (ROI)')
         print(f'{portfolio_average_roi} % (ROI)')
         n += 1
-        print(tuple(serialize(portfolio)))
+        print(serialize(portfolio))
     return tuple(portfolio)
 
 
