@@ -1,8 +1,6 @@
-"""
-à rediger / optimisation !
-"""
 import re
 import logging
+
 from datetime import datetime
 
 from tests import sample_values
@@ -10,17 +8,8 @@ from tests import sample_values
 """
 recupérer la liste des actions via l'import d'un fichier csv ? 
 """
-
 """
-algo glouton : http://nsi4noobs.fr/ PDF exemple/explication
-Une méthode approchée a pour but de trouver une solution avec un bon compromis entre la qualité de la
-solution et le temps de calcul. Pour le problème du sac à dos, voici un exemple d’algorithme de ce type :
-• calculer le rapport (vi / mi) pour chaque objet i ;
-• trier tous les objets par ordre décroissant de cette valeur ;
-• sélectionner les objets un à un dans l’ordre du tri et ajouter l’objet sélectionné dans le sac si le poids
-maximal reste respecté.
-
-=>
+algo glouton =>
 -> obtenir la liste des actions et leurs caracteristiques (nom, cout, rentablitité)
     -> pour chaque action:
         -> calculer le rapport: Net Roi / Share cost (score)
@@ -58,24 +47,23 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
     portfolio_average_roi = 0.0
     n = 0
     while portfolio_cost <= 500.0 and n < len(sorted_shares_list):  # petit bugfix/patch rapide, à faire mieux !
-        if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0:
+        next_share = sorted_shares_list[n]
+        next_share_name = next_share['name']
+        if portfolio_cost + get_share_cost(next_share) <= 500.0:
+            print(f'\nPortfolio cost limit not reached, new share added: {next_share_name}:')
             portfolio.append(sorted_shares_list[n])
-        portfolio_cost = get_portfolio_cost(portfolio)
-        portfolio_net_roi = round(get_portfolio_net_roi(portfolio), 2)
-        portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2) * 100
-        print(portfolio)
-        print(f'Cost: {portfolio_cost} €')
-        print(f'Net ROI: {portfolio_net_roi} €')
-        print(f'Relative ROI: {portfolio_average_roi} %')
-        print(serialize(portfolio))
-        n += 1
-        print(n)
-        print(serialize(portfolio))
-    print(portfolio)
-    print(f'Cost: {portfolio_cost} €')
-    print(f'Net ROI: {portfolio_net_roi} €')
-    print(f'Relative ROI: {portfolio_average_roi} %')
-    print(serialize(portfolio))
+            portfolio_cost = get_portfolio_cost(portfolio)
+            portfolio_net_roi = round(get_portfolio_net_roi(portfolio), 2)
+            portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2) * 100
+            print(f'Portfolio: {serialize(portfolio)}')
+            print(f'Cost: {portfolio_cost} €')
+            print(f'Net ROI: {portfolio_net_roi} €')
+            print(f'Relative ROI: {portfolio_average_roi} %')
+            n += 1
+    print(f'\nOptimized portfolio found: {serialize(portfolio)} '
+          f'for a cost of: {portfolio_cost} € investment\n'
+          f'-> Relative ROI: {portfolio_average_roi} %\n'
+          f'-> Net ROI after two years: {portfolio_net_roi} €')
     return tuple(portfolio)
 
 
@@ -128,7 +116,9 @@ def get_share_score(share: dict) -> float:
     """
     Calculate the net return on investment for a specific share
     """
-    return round(get_share_cost(share) * share['roi'], 5)
+    share_name = share['name']
+    score = round(get_share_cost(share) * share['roi'], 5)
+    return score
 
 
 def main(shares_list):
@@ -137,12 +127,11 @@ def main(shares_list):
     logging.info(f'Scan Start: {datetime.now()}')
     sorted_shares_list = get_sorted_shares_list(shares_list)
     final_portfolio = fill_portfolio(sorted_shares_list)
-    print(final_portfolio)
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio -> {serialize(final_portfolio)}')
     execution_time = datetime.now() - timer_0
-    logging.info(f' Execution Time = {execution_time}')
-    print(f' Execution Time = {execution_time}')
+    logging.info(f'Execution Time = {execution_time}')
+    print(f'\nExecution Time = {execution_time}')
     return final_portfolio
 
 
