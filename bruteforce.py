@@ -222,4 +222,4 @@ main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
 """
 
 if __name__ == "__main__":
-    main(shares, 1, 7, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+    main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
