@@ -130,7 +130,7 @@ def main(shares_list: list[dict],
     By default, the best result is saved in a variable,
     the Option Secure enables to save the result in a .txt file
     """
-    logging.basicConfig(filename="bruteforce.log", level=logging.INFO, filemode='w')
+    logging.basicConfig(filename="logs/bruteforce.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
     best_portfolio = ({})

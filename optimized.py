@@ -132,7 +132,7 @@ def get_share_score(share: dict) -> float:
 
 
 def main(shares_list):
-    logging.basicConfig(filename="optimized.log", level=logging.INFO, filemode='w')
+    logging.basicConfig(filename="logs/optimized.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
     sorted_shares_list = get_sorted_shares_list(shares_list)
