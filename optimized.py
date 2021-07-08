@@ -152,12 +152,12 @@ if __name__ == "__main__":
 
 """
 def read_file() -> str:
-    with open('results_save.txt', 'r') as file:
+    with open('results_backups/optimized_result_save.txt', 'r') as file:
         content = file.read()
     return content
 
 
 def write_file(_input: str) -> None:
-    with open('results_save.txt', 'w') as file:
+    with open('results_backups/optimized_result_save.txt', 'w') as file:
         file.write(_input)
 """
