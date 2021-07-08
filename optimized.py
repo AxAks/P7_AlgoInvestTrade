@@ -141,6 +141,7 @@ def main(shares_list):
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio -> {serialize(final_portfolio)}')
     execution_time = datetime.now() - timer_0
+    logging.info(f' Execution Time = {execution_time}')
     print(f' Execution Time = {execution_time}')
     return final_portfolio
 

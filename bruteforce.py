@@ -202,11 +202,12 @@ def main(shares_list: list[dict],
     else:
         print('No portfolio was found under the investment limit !')
 
-    execution_time = datetime.now() - timer_0
-    print(f' Execution Time = {execution_time}')
     logging.info(f'Latest scan step proceeded: {shares_amount - 1}')
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
+    execution_time = datetime.now() - timer_0
+    logging.info(f' Execution Time = {execution_time}')
+    print(f' Execution Time = {execution_time}')
     return best_portfolio
 
 
