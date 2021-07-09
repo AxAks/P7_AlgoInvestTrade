@@ -47,9 +47,8 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
     portfolio_average_roi = 0.0
     n = 0
     while portfolio_cost <= 500.0 and n < len(sorted_shares_list):  # petit bugfix/patch rapide, à faire mieux !
-        next_share = sorted_shares_list[n]
-        next_share_name = next_share['name']
-        if portfolio_cost + get_share_cost(next_share) <= 500.0:
+        next_share_name = sorted_shares_list[n]['name']
+        if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0:
             print(f'\nPortfolio cost limit not reached, new share added: {next_share_name}:')
             portfolio.append(sorted_shares_list[n])
             portfolio_cost = get_portfolio_cost(portfolio)
@@ -57,9 +56,9 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
             portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2) * 100
             print(f'Portfolio: {serialize(portfolio)}')
             print(f'Cost: {portfolio_cost} €')
-            print(f'Net ROI: {portfolio_net_roi} €')
             print(f'Relative ROI: {portfolio_average_roi} %')
-            n += 1
+            print(f'Net ROI: {portfolio_net_roi} €')
+        n += 1
     print(f'\nOptimized portfolio found: {serialize(portfolio)} '
           f'for a cost of: {portfolio_cost} € investment\n'
           f'-> Relative ROI: {portfolio_average_roi} %\n'
