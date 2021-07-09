@@ -205,4 +205,4 @@ shares = sample_values.shares_list
 # depuis un fichier, code à adapter
 
 if __name__ == "__main__":
-    main(shares, 20, lambda x: x <= 500, get_portfolio_net_roi, secure=True, scan_begin=1)
+    main(shares, 20, lambda x: x <= 500, get_portfolio_net_roi)

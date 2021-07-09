@@ -125,7 +125,9 @@ def main(shares_list):
     sorted_shares_list = get_sorted_shares_list(shares_list)
     final_portfolio = fill_portfolio(sorted_shares_list)
     logging.info(f'Scan End: {datetime.now()}')
-    logging.info(f'Scan Result : Best Portfolio -> {serialize(final_portfolio)}')
+    final_portfolio_net_roi = get_portfolio_net_roi(final_portfolio)
+    logging.info(f'Scan Result : Best Portfolio -> {serialize(final_portfolio)} '
+                 f'(Net ROI: {final_portfolio_net_roi} €)')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
     print(f'\nExecution Time = {execution_time}')
