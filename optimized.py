@@ -46,7 +46,7 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
     portfolio_cost = 0.0
     portfolio_average_roi = 0.0
     n = 0
-    while portfolio_cost <= 500.0 and n < len(sorted_shares_list):  # petit bugfix/patch rapide, à faire mieux !
+    while portfolio_cost <= 500.0 and n < len(sorted_shares_list):
         next_share_name = sorted_shares_list[n]['name']
         if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0:
             print(f'\nPortfolio cost limit not reached, new share added: {next_share_name}:')
