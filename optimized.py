@@ -1,9 +1,8 @@
-import re
 import logging
 
 from datetime import datetime
 
-from utils import from_csv_to_list_of_dict
+from utils import deserialize, serialize, from_csv_to_list_of_dict
 from tests import sample_values
 
 """
@@ -27,15 +26,6 @@ def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:  # pas ut
             if share_name in share['name'] and share_name != '':
                 deserialized_portfolio.append(share)
     return tuple(deserialized_portfolio)
-    # pb s'il ne trouve pas le share_name dans la liste d'actions,
-    # il ne l'ajoute pas dans le portefeuile,
-    # mais ne retourne pas d'erreur
-
-
-def serialize(portfolio: tuple) -> str:  # pas utilisé pour le moment
-    portfolio_str = str([str(share['name']) for share in portfolio])
-    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
-    return cleaned_portfolio_str
 
 
 def fill_portfolio(sorted_shares_list: list) -> tuple:
@@ -116,6 +106,8 @@ def get_share_score(share: dict) -> float:
     """
     Calculate the net return on investment for a specific share
     """
+    print('hi')
+    print(round(get_share_cost(share) * share['roi'], 5))
     return round(get_share_cost(share) * share['roi'], 5)
 
 
@@ -135,10 +127,13 @@ def main(shares_list):
     return final_portfolio
 
 
-shares = sample_values.shares_list
+#shares = sample_values.shares_list
+shares = from_csv_to_list_of_dict('tests/dataset1_Python+P7.csv')
 
 if __name__ == "__main__":
     main(shares)
+    for share in shares:
+        print(share)
 
 """
 def read_file() -> str:

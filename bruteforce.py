@@ -1,11 +1,10 @@
-import re
 import logging
 
 from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
-from utils import read_file, write_file, from_csv_to_list_of_dict
+from utils import read_file, write_file, serialize, deserialize, from_csv_to_list_of_dict
 
 from tests import sample_values
 
@@ -72,29 +71,6 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     than the previously registered portfolio score
     """
     return new_score > previous_score
-
-
-def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
-    """
-    gets a string with the shares names of a portfolio
-    and transforms them as a portfolio of shares object with the values : cost and roi
-    """
-    deserialized_portfolio = []
-    for share_name in portfolio_str.split('-'):
-        for share in shares_list:
-            if share_name in share['name'] and share_name != '':
-                deserialized_portfolio.append(share)
-    return tuple(deserialized_portfolio)
-
-
-def serialize(portfolio: tuple) -> str:
-    """
-    gets a portfolio of shares with the values : name, cost and roi
-    and transforms it into a string with the shares names of a portfolio
-    """
-    portfolio_str = str([str(share['name']) for share in portfolio])
-    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
-    return cleaned_portfolio_str
 
 
 def main(shares_list: list[dict],
