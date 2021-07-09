@@ -129,7 +129,9 @@ def main(shares_list):
     print(f'\nExecution Time = {execution_time}')
     return final_portfolio
 
-
+"""
+il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
+"""
 # shares_list = sample_values.shares_list
 # shares_list = from_csv_to_list_of_dict('tests/initial_values.csv')
 shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
