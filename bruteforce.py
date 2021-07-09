@@ -69,8 +69,6 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     checks whether the new portfolio score is higher
     than the previously registered portfolio score
     """
-    # >= on a le meme ROI mais avec plus d'actions
-    # > -> on a le meme ROI avec un nombre d'actions moindre
     return new_score > previous_score
 
 
@@ -102,9 +100,6 @@ def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
             if share_name in share['name'] and share_name != '':
                 deserialized_portfolio.append(share)
     return tuple(deserialized_portfolio)
-    # pb s'il ne trouve pas le share_name dans la liste d'actions,
-    # il ne l'ajoute pas dans le portefeuile,
-    # mais ne retourne pas d'erreur
 
 
 def serialize(portfolio: tuple) -> str:
@@ -118,8 +113,8 @@ def serialize(portfolio: tuple) -> str:
 
 
 def main(shares_list: list[dict],
-         scan_begin: int, scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
-         replacement: bool = False, secure: bool = False) -> list[tuple]:  # à retravailler
+         scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
+         replacement: bool = False, secure: bool = False, scan_begin: int = 1) -> list[tuple]:
     """
     Returns all possible combinations of shares under the given criteria:
     - Cost of portfolio under 500€
@@ -149,13 +144,11 @@ def main(shares_list: list[dict],
     else:
         logging.info('Secure Mode Off -> no writing in a file')
 
-    for shares_amount in range(scan_begin, scan_strength):
-        # attention strength = 21 s'il y a 20 action, c'est exclusif
+    for shares_amount in range(scan_begin, scan_strength + 1):
         if shares_amount != 1:
             logging.info(f'Latest scan step proceeded: {shares_amount - 1}')
         if replacement:
             generator = combinations_with_replacement(shares_list, shares_amount)
-            # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
         logging.info(f'Beginning scan step {shares_amount}')
@@ -164,15 +157,12 @@ def main(shares_list: list[dict],
             print(f'Processing Portfolio: {portfolio_str}')
             cost = get_portfolio_cost(portfolio)
             if _filter(cost):
-                print('KEEP !')
                 acceptable_cost = cost
                 if not best_portfolio:
                     best_portfolio = portfolio
                     best_portfolio_cost = acceptable_cost
                     best_portfolio_score = get_portfolio_net_roi(portfolio)
-                    print(f'New best Portfolio: {best_portfolio}, '
-                          f'Cost: {best_portfolio_cost} '
-                          f'Net ROI: {best_portfolio_score}')
+                    logging.info(f'-> New High: {best_portfolio_score} €')
                     if secure:
                         write_file(serialize(best_portfolio))
 
@@ -183,18 +173,16 @@ def main(shares_list: list[dict],
                         best_portfolio = portfolio
                         best_portfolio_cost = acceptable_cost
                         best_portfolio_score = portfolio_score
-                        print(f'-> New High: {best_portfolio_score}€')
+                        print(f'-> New High: {best_portfolio_score} €')
+                        logging.info(f'-> New High: {best_portfolio_score} €')
                         if secure:
                             write_file(serialize(best_portfolio))
-
-            else:
-                print('DROP !')
 
     if best_portfolio:
         print(f'\nHere is the Best Possible Portfolio of all:\n'
               f'- Investment: {best_portfolio_cost}\n'
               f'- Portfolio Average ROI: {round(best_portfolio_roi * 100, 2)} %\n'
-              f'- Net ROI after 2 years: {best_portfolio_score} €\n'
+              f'- Net ROI after 2 years: {round(best_portfolio_score, 2)} €\n'
               f'- Portfolio: {serialize(best_portfolio)} ({len(best_portfolio)} Shares)\n'
               f'- Details: {best_portfolio}\n')
 
@@ -203,7 +191,8 @@ def main(shares_list: list[dict],
 
     logging.info(f'Latest scan step proceeded: {shares_amount}')
     logging.info(f'Scan End: {datetime.now()}')
-    logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
+    logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)} '
+                 f'(Net ROI: {round(get_portfolio_net_roi(best_portfolio), 2)} €)')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
     print(f'Execution Time = {execution_time}')
@@ -212,8 +201,8 @@ def main(shares_list: list[dict],
 
 # test samples
 shares = sample_values.shares_list
-# Ou est ce qu'on doit recupérer la lsite des actions à traiter ?
+# Ou est ce qu'on doit recupérer la liste des actions à traiter ?
 # depuis un fichier, code à adapter
 
-if __name__ == "__main__":  #  min et max ne peuvent pas etre egaux ca incl et excl
-    main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
+if __name__ == "__main__":
+    main(shares, 20, lambda x: x <= 500, get_portfolio_net_roi, secure=True, scan_begin=1)
