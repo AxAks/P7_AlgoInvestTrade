@@ -158,14 +158,13 @@ def main(shares_list: list[dict],
             # facultatif, par défaut en False
         else:
             generator = combinations(shares_list, shares_amount)
-        n = 1
         logging.info(f'Beginning scan step {shares_amount}')
         for portfolio in generator:
             portfolio_str = serialize(portfolio)
-            print(f'Processing Portfolio #{n} : {portfolio_str}')
-            n += 1
+            print(f'Processing Portfolio: {portfolio_str}')
             cost = get_portfolio_cost(portfolio)
             if _filter(cost):
+                print('KEEP !')
                 acceptable_cost = cost
                 if not best_portfolio:
                     best_portfolio = portfolio
@@ -202,12 +201,12 @@ def main(shares_list: list[dict],
     else:
         print('No portfolio was found under the investment limit !')
 
-    logging.info(f'Latest scan step proceeded: {shares_amount - 1}')
+    logging.info(f'Latest scan step proceeded: {shares_amount}')
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)}')
     execution_time = datetime.now() - timer_0
-    logging.info(f' Execution Time = {execution_time}')
-    print(f' Execution Time = {execution_time}')
+    logging.info(f'Execution Time = {execution_time}')
+    print(f'Execution Time = {execution_time}')
     return best_portfolio
 
 
@@ -216,11 +215,5 @@ shares = sample_values.shares_list
 # Ou est ce qu'on doit recupérer la lsite des actions à traiter ?
 # depuis un fichier, code à adapter
 
-"""
-# functions execution
-main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
-#  min et max ne peuvent pas etre egaux ca incl et excl
-"""
-
-if __name__ == "__main__":
+if __name__ == "__main__":  #  min et max ne peuvent pas etre egaux ca incl et excl
     main(shares, 1, 21, lambda x: x <= 500, get_portfolio_net_roi, secure=True)

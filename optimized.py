@@ -59,7 +59,7 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
             print(f'Relative ROI: {portfolio_average_roi} %')
             print(f'Net ROI: {portfolio_net_roi} €')
         n += 1
-    print(f'\nOptimized portfolio found: {serialize(portfolio)} '
+    print(f'\nOptimized portfolio found: {serialize(portfolio)} ({len(portfolio)} shares) '
           f'for a cost of: {portfolio_cost} € investment\n'
           f'-> Relative ROI: {portfolio_average_roi} %\n'
           f'-> Net ROI after two years: {portfolio_net_roi} €')
@@ -115,9 +115,7 @@ def get_share_score(share: dict) -> float:
     """
     Calculate the net return on investment for a specific share
     """
-    share_name = share['name']
-    score = round(get_share_cost(share) * share['roi'], 5)
-    return score
+    return round(get_share_cost(share) * share['roi'], 5)
 
 
 def main(shares_list):
