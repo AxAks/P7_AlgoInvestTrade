@@ -49,7 +49,7 @@ def get_portfolio_cost(portfolio: tuple):
 def get_portfolio_net_roi(portfolio: tuple):
     cost = get_portfolio_cost(portfolio)
     average_roi = get_portfolio_average_roi(portfolio)
-    net_roi = cost * average_roi
+    net_roi = cost * average_roi / 100
     return net_roi
 
 
@@ -96,7 +96,7 @@ def main(shares_list: list[dict],
     if secure:
         logging.info('Secure Mode On -> saving results in file')
         # sauvegarde dans un fichier
-        best_portfolio = deserialize(read_file(), shares)
+        best_portfolio = deserialize(read_file('results_backups/bruteforce_result_save.txt'), shares_list)
         if best_portfolio:
             best_portfolio_cost = get_portfolio_cost(best_portfolio)
             best_portfolio_roi = get_portfolio_average_roi(best_portfolio)
@@ -130,10 +130,12 @@ def main(shares_list: list[dict],
                 else:
                     best_portfolio_score = round(score(best_portfolio), 2)
                     portfolio_score = round(score(portfolio), 2)
+                    portfolio_roi = get_portfolio_average_roi(portfolio)
                     if new_high_score(portfolio_score, best_portfolio_score):
                         best_portfolio = portfolio
                         best_portfolio_cost = acceptable_cost
                         best_portfolio_score = portfolio_score
+                        best_portfolio_roi = portfolio_roi
                         print(f'-> New High: {best_portfolio_score} €')
                         logging.info(f'-> New High: {best_portfolio_score} €')
                         if secure:
@@ -141,8 +143,8 @@ def main(shares_list: list[dict],
 
     if best_portfolio:
         print(f'\nHere is the Best Possible Portfolio of all:\n'
-              f'- Investment: {best_portfolio_cost}\n'
-              f'- Portfolio Average ROI: {round(best_portfolio_roi * 100, 2)} %\n'
+              f'- Investment: {best_portfolio_cost} €\n'
+              f'- Portfolio Average ROI: {round(best_portfolio_roi, 2)} %\n'
               f'- Net ROI after 2 years: {round(best_portfolio_score, 2)} €\n'
               f'- Portfolio ({len(best_portfolio)} Shares): {serialize(best_portfolio)}\n'
               f'- Details: {best_portfolio}\n')
@@ -152,8 +154,9 @@ def main(shares_list: list[dict],
 
     logging.info(f'Latest scan step proceeded: {shares_amount}')
     logging.info(f'Scan End: {datetime.now()}')
-    logging.info(f'Scan Result : Best Portfolio -> {serialize(best_portfolio)} '
-                 f'(Net ROI: {round(get_portfolio_net_roi(best_portfolio), 2)} €)')
+    logging.info(f'Scan Result : Best Portfolio (Net ROI: {round(get_portfolio_net_roi(best_portfolio), 2)} €):\n'
+                 f'-> {serialize(best_portfolio)}'
+                 f'for a investment of {get_portfolio_cost(best_portfolio)} € in {len(best_portfolio)} shares')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
     print(f'Execution Time = {execution_time}')
@@ -161,12 +164,16 @@ def main(shares_list: list[dict],
 
 
 # test samples
-# shares = sample_values.shares_list
-
+"""
+il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
+"""
+# shares_list = sample_values.shares_list
+shares_list = from_csv_to_list_of_dict('tests/initial_values.csv')
+# shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
 
 
 if __name__ == "__main__":
-    shares = from_csv_to_list_of_dict('tests/initial_values.csv', sep=';')
-    main(shares, 4, lambda x: x <= 500, get_portfolio_net_roi)
+
+    main(shares_list, 2, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
     # print(from_csv_to_list_of_dict(r'tests/dataset1_Python+P7.csv'))
     # print(from_csv_to_list_of_dict(r'tests/dataset2_Python+P7.csv'))
