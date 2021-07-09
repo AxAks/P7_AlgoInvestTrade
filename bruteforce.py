@@ -144,7 +144,7 @@ def main(shares_list: list[dict],
               f'- Investment: {best_portfolio_cost}\n'
               f'- Portfolio Average ROI: {round(best_portfolio_roi * 100, 2)} %\n'
               f'- Net ROI after 2 years: {round(best_portfolio_score, 2)} €\n'
-              f'- Portfolio: {serialize(best_portfolio)} ({len(best_portfolio)} Shares)\n'
+              f'- Portfolio ({len(best_portfolio)} Shares): {serialize(best_portfolio)}\n'
               f'- Details: {best_portfolio}\n')
 
     else:

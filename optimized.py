@@ -39,21 +39,22 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
     n = 0
     while portfolio_cost <= 500.0 and n < len(sorted_shares_list):
         next_share_name = sorted_shares_list[n]['name']
-        if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0:
+        if portfolio_cost + get_share_cost(sorted_shares_list[n]) <= 500.0 \
+                and get_share_score(sorted_shares_list[n]) != 0.0:
             print(f'\nPortfolio cost limit not reached, new share added: {next_share_name}:')
             portfolio.append(sorted_shares_list[n])
             portfolio_cost = get_portfolio_cost(portfolio)
             portfolio_net_roi = round(get_portfolio_net_roi(portfolio), 2)
-            portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2) * 100
+            portfolio_average_roi = round(get_portfolio_average_roi(portfolio), 2)
             print(f'Portfolio: {serialize(portfolio)}')
             print(f'Cost: {portfolio_cost} €')
             print(f'Relative ROI: {portfolio_average_roi} %')
-            print(f'Net ROI: {portfolio_net_roi} €')
+            print(f'Net ROI after two years: {round(portfolio_net_roi / 100, 2)} €')
         n += 1
-    print(f'\nOptimized portfolio found: {serialize(portfolio)} ({len(portfolio)} shares) '
+    print(f'\nOptimized portfolio found ({len(portfolio)} shares): {serialize(portfolio)} '
           f'for a cost of: {portfolio_cost} € investment\n'
           f'-> Relative ROI: {portfolio_average_roi} %\n'
-          f'-> Net ROI after two years: {portfolio_net_roi} €')
+          f'-> Net ROI after two years: {round(portfolio_net_roi / 100, 2)} €')
     return tuple(portfolio)
 
 
@@ -88,27 +89,29 @@ def get_portfolio_cost(portfolio: tuple) -> float:
     return portfolio_cost
 
 
-def get_sorted_shares_list(shares_list: list) -> list:
-    """
-    returns a list of shares sorted from higher to lower score (net ROI)
-    """
-    return sorted(shares_list, key=lambda share: get_share_score(share), reverse=True)
-
-
 def get_share_cost(share: dict) -> float:
     """
     Give the cost of a specific share
     """
-    return share['cost']
+    if share:
+        return share['cost']
 
 
 def get_share_score(share: dict) -> float:
     """
     Calculate the net return on investment for a specific share
     """
-    print('hi')
-    print(round(get_share_cost(share) * share['roi'], 5))
-    return round(get_share_cost(share) * share['roi'], 5)
+    if not share:
+        return 0.0
+    else:
+        return round(get_share_cost(share) * share['roi'], 5)
+
+
+def get_sorted_shares_list(shares_list: list) -> list:
+    """
+    returns a list of shares sorted from higher to lower score (net ROI)
+    """
+    return sorted(shares_list, key=lambda share: get_share_score(share), reverse=True)
 
 
 def main(shares_list):
@@ -127,22 +130,9 @@ def main(shares_list):
     return final_portfolio
 
 
-#shares = sample_values.shares_list
-shares = from_csv_to_list_of_dict('tests/dataset1_Python+P7.csv')
+# shares_list = sample_values.shares_list
+# shares_list = from_csv_to_list_of_dict('tests/initial_values.csv')
+shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
 
 if __name__ == "__main__":
-    main(shares)
-    for share in shares:
-        print(share)
-
-"""
-def read_file() -> str:
-    with open('results_backups/optimized_result_save.txt', 'r') as file:
-        content = file.read()
-    return content
-
-
-def write_file(_input: str) -> None:
-    with open('results_backups/optimized_result_save.txt', 'w') as file:
-        file.write(_input)
-"""
+    main(shares_list)

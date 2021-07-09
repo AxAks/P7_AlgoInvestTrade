@@ -2,124 +2,124 @@ shares_list = [
     {
     'name': 'A',
     'cost': 20,
-    'roi': 0.05
+    'roi': 5
     },
     {
     'name': 'B',
     'cost': 30,
-    'roi': 0.1
+    'roi': 10
     },
     {
     'name': 'C',
     'cost': 50,
-    'roi': 0.15
+    'roi': 15
     },
     {
     'name': 'D',
     'cost': 70,
-    'roi': 0.2
+    'roi': 20
     },
     {
     'name': 'E',
     'cost': 60,
-    'roi': 0.17
+    'roi': 17
     },
     {
     'name': 'F',
     'cost': 80,
-    'roi': 0.25
+    'roi': 25
     },
     {
     'name': 'G',
     'cost': 22,
-    'roi': 0.07
+    'roi': 7
     },
     {
     'name': 'H',
     'cost': 26,
-    'roi': 0.11
+    'roi': 11
     },
     {
     'name': 'I',
     'cost': 48,
-    'roi': 0.13
+    'roi': 13
     },
     {
     'name': 'J',
     'cost': 34,
-    'roi': 0.27
+    'roi': 27
     },
     {
     'name': 'K',
     'cost': 42,
-    'roi': 0.17
+    'roi': 17
     },
     {
     'name': 'L',
     'cost': 110,
-    'roi': 0.09
+    'roi': 9
     },
     {
     'name': 'M',
     'cost': 38,
-    'roi': 0.23
+    'roi': 23
     },
     {
     'name': 'N',
     'cost': 14,
-    'roi': 0.01
+    'roi': 1
     },
     {
     'name': 'O',
     'cost': 18,
-    'roi': 0.03
+    'roi': 3
     },
     {
     'name': 'P',
     'cost': 8,
-    'roi': 0.08
+    'roi': 8
     },
     {
     'name': 'Q',
     'cost': 4,
-    'roi': 0.12
+    'roi': 12
     },
     {
     'name': 'R',
     'cost': 10,
-    'roi': 0.14
+    'roi': 14
     },
     {
     'name': 'S',
     'cost': 24,
-    'roi': 0.21
+    'roi': 21
     },
     {
     'name': 'T',
     'cost': 114,
-    'roi': 0.18
+    'roi': 18
     }
 ]
 
 
 test_portfolio = (
-    {'name': 'R', 'cost': 10, 'roi': 0.14},
-    {'name': 'S', 'cost': 24, 'roi': 0.21},
-    {'name': 'T', 'cost': 114, 'roi': 0.18}
+    {'name': 'R', 'cost': 10, 'roi': 14},
+    {'name': 'S', 'cost': 24, 'roi': 21},
+    {'name': 'T', 'cost': 114, 'roi': 18}
 )
 
 
 test_portfolio2 = (
-    {'name': 'J', 'cost': 34, 'roi': 0.27},
-    {'name': 'K', 'cost': 42, 'roi': 0.17},
-    {'name': 'L', 'cost': 110, 'roi': 0.09}
+    {'name': 'J', 'cost': 34, 'roi': 27},
+    {'name': 'K', 'cost': 42, 'roi': 17},
+    {'name': 'L', 'cost': 110, 'roi': 9}
 )
 
 test_portfolio3 = (
-    {'name': 'R', 'cost': 10, 'roi': 0.14},
-    {'name': 'S', 'cost': 24, 'roi': 0.21},
-    {'name': 'T', 'cost': 114, 'roi': 0.18},
-    {'name': 'J', 'cost': 34, 'roi': 0.27},
-    {'name': 'K', 'cost': 42, 'roi': 0.17},
-    {'name': 'L', 'cost': 110, 'roi': 0.09}
+    {'name': 'R', 'cost': 10, 'roi': 14},
+    {'name': 'S', 'cost': 24, 'roi': 21},
+    {'name': 'T', 'cost': 114, 'roi': 18},
+    {'name': 'J', 'cost': 34, 'roi': 27},
+    {'name': 'K', 'cost': 42, 'roi': 17},
+    {'name': 'L', 'cost': 110, 'roi': 9}
 )

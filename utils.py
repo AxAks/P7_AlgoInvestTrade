@@ -5,9 +5,9 @@ import re
 import pandas as pd
 
 
-def serialize(portfolio: tuple) -> str:  # pas utilisé pour le moment
+def serialize(portfolio: tuple) -> str:
     portfolio_str = str([str(share['name']) for share in portfolio])
-    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', '-')
+    cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', ', ')
     return cleaned_portfolio_str
 
 
@@ -17,7 +17,7 @@ def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
     and transforms them as a portfolio of shares object with the values : cost and roi
     """
     deserialized_portfolio = []
-    for share_name in portfolio_str.split('-'):
+    for share_name in portfolio_str.split(','):
         for share in shares_list:
             if share_name in share['name'] and share_name != '':
                 deserialized_portfolio.append(share)
@@ -52,5 +52,7 @@ def from_csv_to_list_of_dict(csv_file: str, sep: str = ',') -> list[dict]:
     profit_index = 2
     shares_list = [
         {'name': row[name_index], 'cost': row[price_index], 'roi': row[profit_index]}
+        if row[price_index] > 0.0 else {'name': row[name_index], 'cost': 0.0, 'roi': 0.0}
         for row in df.itertuples(index=False)]
     return shares_list
+
