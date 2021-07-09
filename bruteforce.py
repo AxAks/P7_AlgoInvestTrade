@@ -5,6 +5,8 @@ from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
+from utils import read_file, write_file, from_csv_to_list_of_dict
+
 from tests import sample_values
 
 """
@@ -70,23 +72,6 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     than the previously registered portfolio score
     """
     return new_score > previous_score
-
-
-def read_file() -> str:
-    """
-    enables to read the file to load data
-    """
-    with open('results_backups/bruteforce_result_save.txt', 'r') as file:
-        content = file.read()
-    return content
-
-
-def write_file(_input: str) -> None:
-    """
-    enables to write to the file to save data
-    """
-    with open('results_backups/bruteforce_result_save.txt', 'w') as file:
-        file.write(_input)
 
 
 def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
@@ -200,9 +185,12 @@ def main(shares_list: list[dict],
 
 
 # test samples
-shares = sample_values.shares_list
-# Ou est ce qu'on doit recupérer la liste des actions à traiter ?
-# depuis un fichier, code à adapter
+# shares = sample_values.shares_list
+
+
 
 if __name__ == "__main__":
-    main(shares, 20, lambda x: x <= 500, get_portfolio_net_roi)
+    shares = from_csv_to_list_of_dict('tests/initial_values.csv', sep=';')
+    main(shares, 4, lambda x: x <= 500, get_portfolio_net_roi)
+    # print(from_csv_to_list_of_dict(r'tests/dataset1_Python+P7.csv'))
+    # print(from_csv_to_list_of_dict(r'tests/dataset2_Python+P7.csv'))

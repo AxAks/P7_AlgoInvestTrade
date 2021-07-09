@@ -3,6 +3,7 @@ import logging
 
 from datetime import datetime
 
+from utils import from_csv_to_list_of_dict
 from tests import sample_values
 
 """
