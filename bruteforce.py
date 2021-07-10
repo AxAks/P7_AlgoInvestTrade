@@ -4,65 +4,9 @@ from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
-from utils import read_file, write_file, serialize, deserialize, from_csv_to_list_of_dict
-
-from tests import sample_values
-
-"""
-recupérer la liste des actions via l'import d'un fichier csv ? 
-"""
-
-"""
--> obtenir la liste des actions et leurs caracteristiques (nom, cout, rentablitité)
--> lancer le process pour trouver toutes les combinaisons possibles
-(donner un nom a chaque portfolio ou pas besoin?)
--> pour chaque combinaison:
-    -> verifier la limite de montant.
-        -> Si au dessus, on vire , si en dessous on garde (+ ou - 500€)
-    -> calculer le score de rentablitié (gains nets /invest "ROI")
-    (quid de l'investissement de départ, depend du client/choix !!)
-    (profil prudent: investir moins, moins de rentabilité, profil risque: investir plus: gain possible plus grands,
-    quel choix)
-    mettre la possibilité d'ajouter un parametre de choix de "type de profil, type d'investisseur"?
-    dans un 1er temps, on reste sur le pourcentage de rentabilité pour faire simple
-        -> si premier en dessous de la limite de montant on garde(pas de comparaison possible), si suivant,
-         on compare avec le précedent.
-        -> on ne garde que celui qui a le meilleur score sur les deux portefeuilles
-
-je voulais prendre en compte le cout d'investissement de départ (mais à revoir, pas utile pour le projet) 
-// donner ensuite la possibilité de choix entre option : profil prudent/ profil prise de risque
--> favoriser un cout d'investimment moindre OU favoriser le profit maximum meme si le cout de déparrt est plus elevé 
-"""
-
-
-def get_portfolio_cost(portfolio: tuple):
-    """
-    calculates the total cost of a portfolio based on the shares prices
-    Helps to calculate the Return on Investment after two years
-    """
-    portfolio_cost = 0
-    for share in portfolio:
-        portfolio_cost += share['cost']
-    return portfolio_cost
-
-
-def get_portfolio_net_roi(portfolio: tuple):
-    cost = get_portfolio_cost(portfolio)
-    average_roi = get_portfolio_average_roi(portfolio)
-    net_roi = cost * average_roi / 100
-    return net_roi
-
-
-def get_portfolio_average_roi(portfolio: tuple):
-    """
-    enables to calculate the average Return on Investment ratio of a portfolio
-    helps calculate the net Return on Investment in Euros of a portfolio
-    """
-    shares_roi_sum = 0
-    for share in portfolio:
-        shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
-    return portfolio_average_roi
+from utils import read_file, write_file
+from commons import serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_average_roi, \
+    get_portfolio_net_roi
 
 
 def new_high_score(new_score: float, previous_score: float) -> bool:
@@ -79,7 +23,7 @@ def main(shares_list: list[dict],
     """
     Returns all possible combinations of shares under the given criteria:
     - Cost of portfolio under 500€
-    - Share only buyable once
+    - Share only to be bought once
     - Share cannot be sold partially
     Give the possibility to choose whether an share can be
     bought several times (if needed later for evolution)
@@ -96,7 +40,8 @@ def main(shares_list: list[dict],
     if secure:
         logging.info('Secure Mode On -> saving results in file')
         # sauvegarde dans un fichier
-        best_portfolio = deserialize(read_file('results_backups/bruteforce_result_save.txt'), shares_list)
+        file = 'results_backups/bruteforce_buffer_result.txt'
+        best_portfolio = deserialize(read_file(file), shares_list)
         if best_portfolio:
             best_portfolio_cost = get_portfolio_cost(best_portfolio)
             best_portfolio_roi = get_portfolio_average_roi(best_portfolio)
@@ -125,7 +70,8 @@ def main(shares_list: list[dict],
                     best_portfolio_score = get_portfolio_net_roi(portfolio)
                     logging.info(f'-> New High: {best_portfolio_score} €')
                     if secure:
-                        write_file(serialize(best_portfolio))
+                        file = f'results_backups/bruteforce_buffer_result.txt'
+                        write_file(file, serialize(best_portfolio))
 
                 else:
                     best_portfolio_score = round(score(best_portfolio), 2)
@@ -139,7 +85,8 @@ def main(shares_list: list[dict],
                         print(f'-> New High: {best_portfolio_score} €')
                         logging.info(f'-> New High: {best_portfolio_score} €')
                         if secure:
-                            write_file(serialize(best_portfolio))
+                            file = f'results_backups/bruteforce_buffer_result.txt'
+                            write_file(file, serialize(best_portfolio))
 
     if best_portfolio:
         print(f'\nHere is the Best Possible Portfolio of all:\n'
@@ -155,7 +102,7 @@ def main(shares_list: list[dict],
     logging.info(f'Latest scan step proceeded: {shares_amount}')
     logging.info(f'Scan End: {datetime.now()}')
     logging.info(f'Scan Result : Best Portfolio (Net ROI: {round(get_portfolio_net_roi(best_portfolio), 2)} €):\n'
-                 f'-> {serialize(best_portfolio)}'
+                 f'-> {serialize(best_portfolio)}\n'
                  f'for a investment of {get_portfolio_cost(best_portfolio)} € in {len(best_portfolio)} shares')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
@@ -163,17 +110,13 @@ def main(shares_list: list[dict],
     return best_portfolio
 
 
-# test samples
 """
 il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
 """
-# shares_list = sample_values.shares_list
 shares_list = from_csv_to_list_of_dict('tests/initial_values.csv')
-# shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
+#  shares_list = from_csv_to_list_of_dict('tests/dataset1_Python+P7.csv')
+#  shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
 
 
 if __name__ == "__main__":
-
-    main(shares_list, 2, lambda x: x <= 500, get_portfolio_net_roi, secure=True)
-    # print(from_csv_to_list_of_dict(r'tests/dataset1_Python+P7.csv'))
-    # print(from_csv_to_list_of_dict(r'tests/dataset2_Python+P7.csv'))
+    main(shares_list, 20, lambda x: x <= 500, get_portfolio_net_roi)

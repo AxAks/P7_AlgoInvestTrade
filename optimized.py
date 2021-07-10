@@ -1,37 +1,13 @@
 import logging
-
 from datetime import datetime
-
-from utils import deserialize, serialize, from_csv_to_list_of_dict
-from tests import sample_values
-
-"""
-recupérer la liste des actions via l'import d'un fichier csv ? 
-"""
-"""
-algo glouton =>
--> obtenir la liste des actions et leurs caracteristiques (nom, cout, rentablitité)
-    -> pour chaque action:
-        -> calculer le rapport: Net Roi / Share cost (score)
-        -> trier les actions par score decroissant (liste)
-        -> sélectionner les actions et ajouter au portfeuille tant que le cout maximal autorisé du portfeuille 
-        n'est pas atteint
-"""
-
-
-def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:  # pas utilisé pour le moment
-    deserialized_portfolio = []
-    for share_name in portfolio_str.split('-'):
-        for share in shares_list:
-            if share_name in share['name'] and share_name != '':
-                deserialized_portfolio.append(share)
-    return tuple(deserialized_portfolio)
+from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi, \
+    get_portfolio_average_roi
 
 
 def fill_portfolio(sorted_shares_list: list) -> tuple:
     """
     Fill a portfolio with shares according to the space left in the portfolio
-     .... (to be detailled !)
+     .... (to be detailed !)
     """
     portfolio = []
     portfolio_cost = 0.0
@@ -56,37 +32,6 @@ def fill_portfolio(sorted_shares_list: list) -> tuple:
           f'-> Relative ROI: {portfolio_average_roi} %\n'
           f'-> Net ROI after two years: {round(portfolio_net_roi, 2)} €')
     return tuple(portfolio)
-
-
-def get_portfolio_average_roi(portfolio: tuple):
-    """
-    Calculates the return on Investment of a portfolio of shares as a ratio
-    """
-    shares_roi_sum = 0
-    for share in portfolio:
-        shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
-    return portfolio_average_roi
-
-
-def get_portfolio_net_roi(portfolio: tuple):
-    """
-    Calculates the net return on Investment of a portfolio of shares
-    """
-    cost = get_portfolio_cost(portfolio)
-    average_roi = get_portfolio_average_roi(portfolio)
-    net_roi = cost * average_roi / 100
-    return net_roi
-
-
-def get_portfolio_cost(portfolio: tuple) -> float:
-    """
-    Calculates the cost of a given portfolio
-    """
-    portfolio_cost = 0
-    for share in portfolio:
-        portfolio_cost += share['cost']
-    return portfolio_cost
 
 
 def get_share_cost(share: dict) -> float:
@@ -134,8 +79,8 @@ def main(shares_list):
 """
 il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
 """
-#  shares_list = sample_values.shares_list
 #  shares_list = from_csv_to_list_of_dict('tests/initial_values.csv')
+#  shares_list = from_csv_to_list_of_dict('tests/dataset1_Python+P7.csv')
 shares_list = from_csv_to_list_of_dict('tests/dataset2_Python+P7.csv')
 
 if __name__ == "__main__":
