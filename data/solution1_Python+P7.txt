@@ -4,4 +4,8 @@ Share-GRUT
 
 Total cost: 498.76€
 Total return: 196.61€
-Relative ROI : 196.61€ / 498,76€ = 34 %
+Relative ROI : 196.61€ / 498,76€ = 39.42 %
+
+((Va-Vd)/Vd)*100
+
+196.61/498.76= 39.42
