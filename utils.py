@@ -7,7 +7,7 @@ import argparse
 
 def csv_filepath_args_parser():
     """
-    Cette fonction permet de lancer le script depuis le terminal bash en mentionnant une URL en tant qu'argument.
+    This function enables to launch a script with a CSV filepath as an argument.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("csv_filepath", help="enter the path of your CSV file", type=str)

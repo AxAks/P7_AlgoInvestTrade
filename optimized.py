@@ -65,7 +65,6 @@ def main() -> tuple[dict]:
                  f'in {len(final_portfolio)} shares')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
-    print(final_portfolio)
     return final_portfolio
 
 
