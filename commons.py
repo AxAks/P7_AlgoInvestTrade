@@ -2,7 +2,7 @@
 General functions to be re-used several times throughout the project
 """
 import re
-
+import warnings
 import pandas as pd
 
 
@@ -65,6 +65,7 @@ def from_csv_to_list_of_dict(csv_file: str, sep: str = ',') -> list[dict]:
     reads a csv file with a list of shares with respective information
     and returns the list of shares as a list of dicts
     """
+    warnings.simplefilter(action='ignore', category=FutureWarning)
     df = pd.read_csv(csv_file, sep)
     name_index = 0
     price_index = 1
