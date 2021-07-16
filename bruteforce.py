@@ -17,17 +17,14 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def main(scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
-         replacement: bool = False, secure: bool = False, scan_begin: int = 1) -> list[tuple]:
+def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
+         replacement: bool = False, secure: bool = False,
+         scan_begin: int = 1, scan_strength: int = 20) -> list[tuple]:
     """
     Returns all possible combinations of shares under the given criteria:
     - Cost of portfolio under 500€
     - Share only to be bought once
     - Share cannot be sold partially
-    Give the possibility to choose whether an share can be
-    bought several times (if needed later for evolution)
-    By default, the best result is saved in a variable,
-    the Option Secure enables to save the result in a .txt file
     """
     args = csv_filepath_args_parser()
     shares_list = from_csv_to_list_of_dict(args.csv_filepath)
@@ -112,4 +109,4 @@ def main(scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[An
 
 
 if __name__ == "__main__":
-    main(20, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
+    main(lambda x: x <= 500, get_portfolio_net_roi)
