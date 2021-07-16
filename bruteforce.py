@@ -4,7 +4,7 @@ from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
-from utils import read_file, write_file, url_args_parser
+from utils import read_file, write_file, csv_filepath_args_parser
 from commons import serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_average_roi, \
     get_portfolio_net_roi
 
@@ -110,12 +110,8 @@ def main(shares_list: list[dict],
     return best_portfolio
 
 
-"""
-il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
-"""
-shares_list = from_csv_to_list_of_dict('data/initial_values.csv')
-# shares_list = from_csv_to_list_of_dict('data/dataset1_Python+P7.csv')
-#  shares_list = from_csv_to_list_of_dict('data/dataset2_Python+P7.csv')
+args = csv_filepath_args_parser()
+shares_list = from_csv_to_list_of_dict(args.csv_filepath)
 
 
 if __name__ == "__main__":

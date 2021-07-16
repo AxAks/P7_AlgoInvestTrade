@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from utils import url_args_parser
+from utils import csv_filepath_args_parser
 from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi
 
 
@@ -62,13 +62,9 @@ def main(shares_list):
     return final_portfolio
 
 
-"""
-il faudrait pouvoir choisir le fichier (le passer en arg dans le terminal)...
-"""
+args = csv_filepath_args_parser()
+shares_list = from_csv_to_list_of_dict(args.csv_filepath)
 
-# shares_list = from_csv_to_list_of_dict('data/initial_values.csv')
-# shares_list = from_csv_to_list_of_dict('data/dataset1_Python+P7.csv')
-shares_list = from_csv_to_list_of_dict('data/dataset2_Python+P7.csv')
 
 if __name__ == "__main__":
     main(shares_list)
