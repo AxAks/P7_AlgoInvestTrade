@@ -21,13 +21,10 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
          replacement: bool = False, secure: bool = False,
          scan_begin: int = 1, scan_strength: int = 20) -> list[tuple]:
     """
-    Returns all possible combinations of shares under the given criteria:
-    - Cost of portfolio under 500€
-    - Share only to be bought once
-    - Share cannot be sold partially
+    Returns all possible combinations of shares under the given criteria
     """
-    args = csv_filepath_args_parser()
-    shares_list = from_csv_to_list_of_dict(args.csv_filepath)
+    csv_filepath = csv_filepath_args_parser()
+    shares_list = from_csv_to_list_of_dict(csv_filepath)
     logging.basicConfig(filename="logs/bruteforce.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')

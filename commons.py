@@ -38,12 +38,16 @@ def get_portfolio_average_roi(portfolio: tuple) -> float:
 
 
 def serialize(portfolio: tuple) -> str:
+    """
+    gets a portfolio of shares a list of dict
+    and returns the names of the shares in the portfolio as a string
+    """
     portfolio_str = str([str(share['name']) for share in portfolio])
     cleaned_portfolio_str = re.sub(r"'| |\[|]", '', portfolio_str).replace(',', ', ')
     return cleaned_portfolio_str
 
 
-def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple:
+def deserialize(portfolio_str: str, shares_list: list[dict]) -> tuple[dict]:
     """
     gets a string with the shares names of a portfolio
     and transforms them as a portfolio of shares object with the values : cost and roi

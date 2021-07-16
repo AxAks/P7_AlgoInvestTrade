@@ -4,7 +4,7 @@ from utils import csv_filepath_args_parser
 from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi
 
 
-def fill_portfolio(sorted_shares_list: list) -> tuple:
+def fill_portfolio(sorted_shares_list: list) -> tuple[dict]:
     """
     Fills a portfolio with highest-profit shares according to the space left in the portfolio
     """
@@ -41,9 +41,13 @@ def get_sorted_shares_list(shares_list: list) -> list:
     return sorted(shares_list, key=lambda share: get_share_score(share), reverse=True)
 
 
-def main():
-    args = csv_filepath_args_parser()
-    shares_list = from_csv_to_list_of_dict(args.csv_filepath)
+def main() -> tuple[dict]:
+    """
+    Sorts the list of shares from highest ROI to lowest and fills the protfolio
+    until the portfolio cost reaches the limit of 500€
+    """
+    csv_filepath = csv_filepath_args_parser()
+    shares_list = from_csv_to_list_of_dict(csv_filepath)
     logging.basicConfig(filename="logs/optimized.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
@@ -61,6 +65,7 @@ def main():
                  f'in {len(final_portfolio)} shares')
     execution_time = datetime.now() - timer_0
     logging.info(f'Execution Time = {execution_time}')
+    print(final_portfolio)
     return final_portfolio
 
 

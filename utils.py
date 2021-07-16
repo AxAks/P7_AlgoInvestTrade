@@ -12,7 +12,7 @@ def csv_filepath_args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("csv_filepath", help="enter the path of your CSV file", type=str)
     args = parser.parse_args()
-    return args
+    return args.csv_filepath
 
 
 def read_file(file: str) -> str:
