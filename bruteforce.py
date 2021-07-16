@@ -17,8 +17,7 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def main(shares_list: list[dict],
-         scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
+def main(scan_strength: int, _filter: Callable[[Any], bool], score: Callable[[Any], float],
          replacement: bool = False, secure: bool = False, scan_begin: int = 1) -> list[tuple]:
     """
     Returns all possible combinations of shares under the given criteria:
@@ -30,6 +29,8 @@ def main(shares_list: list[dict],
     By default, the best result is saved in a variable,
     the Option Secure enables to save the result in a .txt file
     """
+    args = csv_filepath_args_parser()
+    shares_list = from_csv_to_list_of_dict(args.csv_filepath)
     logging.basicConfig(filename="logs/bruteforce.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
@@ -110,9 +111,5 @@ def main(shares_list: list[dict],
     return best_portfolio
 
 
-args = csv_filepath_args_parser()
-shares_list = from_csv_to_list_of_dict(args.csv_filepath)
-
-
 if __name__ == "__main__":
-    main(shares_list, 20, lambda x: x <= 500, get_portfolio_net_roi, secure=False)
+    main(20, lambda x: x <= 500, get_portfolio_net_roi, secure=False)

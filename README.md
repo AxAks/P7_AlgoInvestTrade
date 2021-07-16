@@ -56,11 +56,12 @@ $ pip install -r requirements.txt
 from the terminal, in the root directory of the project:
 
 _activate the environment:_    
-$ source 'venv_name'/bin/activate        
+$ source 'venv_name'/bin/activate    
+     
 _launch the script_:       
-$ python bruteforce.py
-or
-$ python optimized.py  
+$ python bruteforce.py [csv_filepath]      
+or    
+$ python optimized.py [csv_filepath]     
 
 -> the script is executed
 ***

@@ -41,7 +41,9 @@ def get_sorted_shares_list(shares_list: list) -> list:
     return sorted(shares_list, key=lambda share: get_share_score(share), reverse=True)
 
 
-def main(shares_list):
+def main():
+    args = csv_filepath_args_parser()
+    shares_list = from_csv_to_list_of_dict(args.csv_filepath)
     logging.basicConfig(filename="logs/optimized.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
@@ -62,9 +64,5 @@ def main(shares_list):
     return final_portfolio
 
 
-args = csv_filepath_args_parser()
-shares_list = from_csv_to_list_of_dict(args.csv_filepath)
-
-
 if __name__ == "__main__":
-    main(shares_list)
+    main()
