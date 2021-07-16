@@ -64,8 +64,7 @@ def from_csv_to_list_of_dict(csv_file: str, sep: str = ',') -> list[dict]:
     name_index = 0
     price_index = 1
     profit_index = 2
-    shares_list = [
-        {'name': row[name_index], 'cost': row[price_index], 'roi': row[profit_index]}
-        if row[price_index] > 0.0 else {'name': row[name_index], 'cost': 0.0, 'roi': 0.0}
-        for row in df.itertuples(index=False)]
+    shares_list = {
+        row[name_index]: {'cost': row[price_index], 'gains': row[profit_index] * row[price_index]}
+        for row in df.itertuples(index=False) if row[price_index] > 0.0}
     return shares_list
