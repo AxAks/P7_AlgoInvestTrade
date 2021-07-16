@@ -2,6 +2,7 @@
 General functions to be re-used several times throughout the project
 """
 import re
+
 import pandas as pd
 
 
@@ -32,7 +33,7 @@ def get_portfolio_average_roi(portfolio: tuple) -> float:
     shares_roi_sum = 0
     for share in portfolio:
         shares_roi_sum += share['roi']
-        portfolio_average_roi = round(shares_roi_sum / len(portfolio), 5)
+        portfolio_average_roi = shares_roi_sum / len(portfolio)
     return portfolio_average_roi
 
 
@@ -64,7 +65,7 @@ def from_csv_to_list_of_dict(csv_file: str, sep: str = ',') -> list[dict]:
     name_index = 0
     price_index = 1
     profit_index = 2
-    shares_list = {
-        row[name_index]: {'cost': row[price_index], 'gains': row[profit_index] * row[price_index]}
-        for row in df.itertuples(index=False) if row[price_index] > 0.0}
+    shares_list = [
+        {'name': row[name_index], 'cost': row[price_index], 'roi': row[profit_index]}
+        for row in df.itertuples(index=False) if row[price_index] > 0.0]
     return shares_list
