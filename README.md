@@ -83,5 +83,5 @@ Extra options:
 ## 6. Optimized Algorithm <a name="optimized"></a>
 This script (...)
 - It sorts the shares of the given list by score (Return on Investment)
-- It then fills the portfolio with the shares until the cost limit is reached 
+- It then fills the portfolio with the shares until the cost limit is reached and return the built portfolio
 ***
