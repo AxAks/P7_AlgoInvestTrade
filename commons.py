@@ -33,7 +33,7 @@ def get_portfolio_average_roi(portfolio: tuple) -> float:
     portfolio_total_cost = get_portfolio_cost(portfolio)
     portfolio_total_net_roi = 0
     for share in portfolio:
-        portfolio_total_net_roi +=  share['roi']
+        portfolio_total_net_roi += share['roi']
     portfolio_average_roi = portfolio_total_net_roi / portfolio_total_cost * 100
     return portfolio_average_roi
 
