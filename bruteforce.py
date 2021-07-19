@@ -69,8 +69,8 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
                         write_file(file, serialize(best_portfolio))
 
                 else:
-                    best_portfolio_score = round(score(best_portfolio), 2)
-                    portfolio_score = round(score(portfolio), 2)
+                    best_portfolio_score = score(best_portfolio)
+                    portfolio_score = score(portfolio)
                     portfolio_roi = get_portfolio_average_roi(portfolio)
                     if new_high_score(portfolio_score, best_portfolio_score):
                         best_portfolio = portfolio

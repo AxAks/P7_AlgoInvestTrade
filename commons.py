@@ -10,10 +10,10 @@ def get_portfolio_net_roi(portfolio: tuple) -> float:
     """
     Calculates the net return on Investment of a portfolio of shares
     """
-    cost = get_portfolio_cost(portfolio)
-    average_roi = get_portfolio_average_roi(portfolio)
-    net_roi = cost * average_roi / 100
-    return net_roi
+    portfolio_net_roi = 0
+    for share in portfolio:
+        portfolio_net_roi += share['roi']
+    return portfolio_net_roi
 
 
 def get_portfolio_cost(portfolio: tuple) -> float:
@@ -30,10 +30,10 @@ def get_portfolio_average_roi(portfolio: tuple) -> float:
     """
     Calculates the return on Investment of a portfolio of shares
     """
-    shares_roi_sum = 0
+    portfolio_average_roi = 0
     for share in portfolio:
-        shares_roi_sum += share['roi']
-        portfolio_average_roi = shares_roi_sum / len(portfolio)
+        share_average_roi = share['roi'] / share['cost'] * 100
+        portfolio_average_roi += share_average_roi / len(portfolio)
     return portfolio_average_roi
 
 
@@ -71,6 +71,6 @@ def from_csv_to_list_of_dict(csv_file: str, sep: str = ',') -> list[dict]:
     price_index = 1
     profit_index = 2
     shares_list = [
-        {'name': row[name_index], 'cost': row[price_index], 'roi': row[profit_index]}
+        {'name': row[name_index], 'cost': row[price_index], 'roi': row[profit_index] * row[price_index] / 100}
         for row in df.itertuples(index=False) if row[price_index] > 0.0]
     return shares_list

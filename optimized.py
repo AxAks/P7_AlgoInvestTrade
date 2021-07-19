@@ -1,7 +1,8 @@
 import logging
 from datetime import datetime
 from utils import csv_filepath_args_parser
-from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi
+from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi, \
+    get_portfolio_average_roi
 
 
 def fill_portfolio(sorted_shares_list: list) -> tuple[dict]:
@@ -13,32 +14,18 @@ def fill_portfolio(sorted_shares_list: list) -> tuple[dict]:
     n = 0
     while portfolio_cost <= 500.0 and n < len(sorted_shares_list):
         next_share = sorted_shares_list[n]
-        if portfolio_cost + get_share_cost(next_share) <= 500.0:
+        if portfolio_cost + next_share['cost'] <= 500.0:
             portfolio.append(next_share)
             portfolio_cost = get_portfolio_cost(portfolio)
         n += 1
     return tuple(portfolio)
 
 
-def get_share_cost(share: dict) -> float:
-    """
-    Give the cost of a specific share
-    """
-    return share['cost']
-
-
-def get_share_score(share: dict) -> float:
-    """
-    Extracts the return on investment in % for a specific share
-    """
-    return share['roi']
-
-
 def get_sorted_shares_list(shares_list: list) -> list:
     """
     returns a list of shares sorted from higher to lower score (ROI)
     """
-    return sorted(shares_list, key=lambda share: get_share_score(share), reverse=True)
+    return sorted(shares_list, key=lambda share: share['roi'], reverse=True)
 
 
 def main() -> tuple[dict]:
@@ -55,11 +42,14 @@ def main() -> tuple[dict]:
     final_portfolio = fill_portfolio(sorted_shares_list)
     logging.info(f'Scan End: {datetime.now()}')
     final_portfolio_net_roi = get_portfolio_net_roi(final_portfolio)
-    print(f'Scan Result : Best Portfolio (Net ROI: {round(final_portfolio_net_roi, 2)} €):\n'
+    final_portfolio_average_roi = get_portfolio_average_roi(final_portfolio)
+    print(f'Scan Result : Final Portfolio (Net ROI: {round(final_portfolio_net_roi, 2)} €, '
+          f'{round(final_portfolio_average_roi, 2)} %):\n'
           f'-> {serialize(final_portfolio)}\n'
           f'for a investment of {round(get_portfolio_cost(final_portfolio), 2)} € '
           f'in {len(final_portfolio)} shares')
-    logging.info(f'Scan Result : Best Portfolio (Net ROI: {round(final_portfolio_net_roi, 2)} €):\n'
+    logging.info(f'Scan Result : Final Portfolio (Net ROI: {round(final_portfolio_net_roi, 2)} €, '
+                 f'{round(final_portfolio_average_roi, 2)} %):\n'
                  f'-> {serialize(final_portfolio)}\n'
                  f'for a investment of {round(get_portfolio_cost(final_portfolio), 2)} € '
                  f'in {len(final_portfolio)} shares')
