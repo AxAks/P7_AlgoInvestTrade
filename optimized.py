@@ -5,14 +5,14 @@ from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get
     get_portfolio_average_roi
 
 
-def fill_portfolio(sorted_shares_list: list) -> tuple[dict]:
+def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
     """
     Fills a portfolio with highest-profit shares according to the space left in the portfolio
     """
     portfolio = []
     portfolio_cost = 0.0
     n = 0
-    while portfolio_cost <= 500.0 and n < len(sorted_shares_list):
+    while n < len(sorted_shares_list):
         next_share = sorted_shares_list[n]
         if portfolio_cost + next_share['cost'] <= 500.0:
             portfolio.append(next_share)
@@ -30,7 +30,7 @@ def get_sorted_shares_list(shares_list: list) -> list:
 
 def main() -> tuple[dict]:
     """
-    Sorts the list of shares from highest ROI to lowest and fills the protfolio
+    Sorts the list of shares from highest ROI to lowest and fills the portfolio
     until the portfolio cost reaches the limit of 500€
     """
     csv_filepath = csv_filepath_args_parser()

@@ -34,7 +34,6 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
     best_portfolio_score = 0.0
     if secure:
         logging.info('Secure Mode On -> saving results in file')
-        # sauvegarde dans un fichier
         file = 'results_backups/bruteforce_buffer_result.txt'
         best_portfolio = deserialize(read_file(file), shares_list)
         if best_portfolio:
