@@ -28,7 +28,7 @@ def get_portfolio_cost(portfolio: tuple) -> float:
 
 def get_portfolio_average_roi(portfolio: tuple) -> float:
     """
-    Calculates the return on Investment of a portfolio of shares
+    Calculates the return on Investment of a portfolio of shares in pourcentage
     """
     portfolio_total_cost = get_portfolio_cost(portfolio)
     portfolio_total_net_roi = 0
