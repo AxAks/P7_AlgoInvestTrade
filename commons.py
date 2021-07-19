@@ -30,10 +30,11 @@ def get_portfolio_average_roi(portfolio: tuple) -> float:
     """
     Calculates the return on Investment of a portfolio of shares
     """
-    portfolio_average_roi = 0
+    portfolio_total_cost = get_portfolio_cost(portfolio)
+    portfolio_total_net_roi = 0
     for share in portfolio:
-        share_average_roi = share['roi'] / share['cost'] * 100
-        portfolio_average_roi += share_average_roi / len(portfolio)
+        portfolio_total_net_roi +=  share['roi']
+    portfolio_average_roi = portfolio_total_net_roi / portfolio_total_cost * 100
     return portfolio_average_roi
 
 
