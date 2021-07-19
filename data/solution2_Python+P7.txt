@@ -20,3 +20,7 @@ Share-ROOM 1506
 
 Total cost: 489.24€
 Profit: 193.78€ (39,60%)
+
+correction apres verif :
+18 actions
+cost: 489.24€(712.80€); Profit: 193.78€(39.60%)(27.19%)
