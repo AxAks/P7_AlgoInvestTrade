@@ -8,7 +8,7 @@ import pandas as pd
 
 def get_portfolio_net_roi(portfolio: tuple) -> float:
     """
-    Calculates the net return on Investment of a portfolio of shares
+    Calculates the net return on Investment of a portfolio of shares in euros
     """
     portfolio_net_roi = 0
     for share in portfolio:
