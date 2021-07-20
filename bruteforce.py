@@ -28,7 +28,7 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
     best_portfolio_roi = 0.0
     best_portfolio_score = 0.0
 
-    #  Big-O =>  O(2^n)  : ((2^n -1) * n +2)
+    #  Big-O =>  O(2^n)  : ((2^n -1) * n +2) (exponential ..)
     for shares_amount in range(scan_begin, scan_strength + 1):  # n
         generator = combinations(shares_list, shares_amount)
         for portfolio in generator:  # 2^n -1
