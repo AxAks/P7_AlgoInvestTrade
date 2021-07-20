@@ -27,7 +27,8 @@ def get_sorted_shares_list(shares_list: list[dict]) -> list[dict]:
     """
     return sorted(shares_list, key=lambda share: share['roi'], reverse=True)
 
-# Big-O : O(n^2 * log n)
+
+# Big-O : O(n^2 * log n)
 def main() -> tuple[dict]:
     """
     Sorts the list of shares from highest ROI to lowest and fills the portfolio
