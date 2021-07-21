@@ -67,7 +67,7 @@ $ python optimized.py [csv_filepath]
 ***
 
 ## 5. Bruteforce Algorithm <a name="bruteforce"></a>
-This script is linear and evaluates all options.
+This script evaluates all options and finds out the best possible portfolio.
 - It generates all possible fortfolios for the given list shares.
 - It checks their cost acceptability
 - It compares them with the previous one,
@@ -81,7 +81,8 @@ Extra options:
 ***
 
 ## 6. Optimized Algorithm <a name="optimized"></a>
-This script (...)
+This script is more efficiency-oriented but less acurate with choosing the best portfolio. 
+It still return performant portfolio.
 - It sorts the shares of the given list by score (Return on Investment)
 - It then fills the portfolio with the shares until the cost limit is reached and return the built portfolio
 ***
