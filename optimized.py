@@ -11,6 +11,7 @@ def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
     """
     portfolio = []
     portfolio_cost = 0.0
+    timer_0_fill = datetime.now()
     n = 0
     while n < len(sorted_shares_list):  #  n : worse cas il parcourt toute la liste et ajoute tout
         next_share = sorted_shares_list[n]
@@ -18,6 +19,8 @@ def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
             portfolio.append(next_share)
             portfolio_cost = get_portfolio_cost(portfolio)
         n += 1
+    timer_1_fill = datetime.now() - timer_0_fill
+    print(timer_1_fill)
     return tuple(portfolio)
 
 
@@ -25,10 +28,13 @@ def get_sorted_shares_list(shares_list: list[dict]) -> list[dict]:
     """
     returns a list of shares sorted from higher to lower score (ROI)
     """
-    return sorted(shares_list, key=lambda share: share['roi'], reverse=True)
+    timer_0_sort = datetime.now()
+    sorted_list = sorted(shares_list, key=lambda share: share['roi'], reverse=True)
+    timer_1_sort = datetime.now() - timer_0_sort
+    print(timer_1_sort)
+    return sorted_list
 
-
-# Big-O : O(n^2 * log n)
+# Big-O : O((n * log n) + n)
 def main() -> tuple[dict]:
     """
     Sorts the list of shares from highest ROI to lowest and fills the portfolio
