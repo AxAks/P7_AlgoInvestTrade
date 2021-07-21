@@ -21,7 +21,7 @@ def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
     return tuple(portfolio)
 
 
-def get_sorted_shares_list(shares_list: list) -> list:
+def get_sorted_shares_list(shares_list: list[dict]) -> list[dict]:
     """
     returns a list of shares sorted from higher to lower score (ROI)
     """
