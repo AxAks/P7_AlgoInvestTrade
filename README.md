@@ -59,9 +59,11 @@ _activate the environment:_
 $ source 'venv_name'/bin/activate    
      
 _launch the script_:       
-$ python bruteforce.py [csv_filepath]      
+$ python bruteforce.py [csv_filepath] [cost_limit]       
+(cost limit is optional, set by default on 500)
 or    
-$ python optimized.py [csv_filepath]     
+$ python optimized.py [csv_filepath] [cost_limit] 
+(cost limit is optional, set by default on 500)
 
 -> the script is executed
 ***

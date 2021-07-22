@@ -4,9 +4,9 @@ from datetime import datetime
 from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
-from utils import read_file, write_file, csv_filepath_args_parser
-from commons import serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_average_roi, \
-    get_portfolio_net_roi
+from utils import read_file, write_file
+from commons import csv_filepath_args_parser, serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, \
+    get_portfolio_average_roi, get_portfolio_net_roi
 
 
 def new_high_score(new_score: float, previous_score: float) -> bool:
@@ -17,13 +17,14 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
-         replacement: bool = False, secure: bool = False,
+def main(score: Callable[[Any], float], replacement: bool = False, secure: bool = False,
          scan_begin: int = 1, scan_strength: int = 20) -> list[tuple]:
     """
     Returns all possible combinations of shares under the given criteria
     """
-    csv_filepath = csv_filepath_args_parser()
+    args = csv_filepath_args_parser()
+    csv_filepath = args.csv_filepath
+    cost_limit = args.cost_limit if args.cost_limit else 500
     shares_list = from_csv_to_list_of_dict(csv_filepath)
     logging.basicConfig(filename="logs/bruteforce.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
@@ -56,7 +57,7 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
             portfolio_str = serialize(portfolio)
             print(f'Processing Portfolio: {portfolio_str}')
             cost = get_portfolio_cost(portfolio)
-            if _filter(cost):
+            if cost <= cost_limit:
                 acceptable_cost = cost
                 if not best_portfolio:
                     best_portfolio = portfolio
@@ -105,4 +106,4 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
 
 
 if __name__ == "__main__":
-    main(lambda x: x <= 500, get_portfolio_net_roi)
+    main(get_portfolio_net_roi)

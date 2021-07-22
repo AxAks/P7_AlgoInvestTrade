@@ -1,9 +1,24 @@
 """
 General functions to be re-used several times throughout the project
 """
-import re
-import warnings
+
 import pandas as pd
+import argparse
+import warnings
+import re
+
+
+def csv_filepath_args_parser():
+    """
+    This function enables to launch the scripts with arguments
+    - a CSV filepath containing the different shares
+    - the cost limit of the returned portfolio
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("csv_filepath", help="enter the path of your CSV file for shares", type=str)
+    parser.add_argument("cost_limit", nargs='?', help="enter the maximal cost of the portfolio", type=float)
+    args = parser.parse_args()
+    return args
 
 
 def get_portfolio_net_roi(portfolio: tuple) -> float:

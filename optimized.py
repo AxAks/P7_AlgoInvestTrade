@@ -1,11 +1,11 @@
 import logging
 from datetime import datetime
-from utils import csv_filepath_args_parser
-from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_net_roi, \
-    get_portfolio_average_roi
+
+from commons import csv_filepath_args_parser, serialize, from_csv_to_list_of_dict, \
+    get_portfolio_cost, get_portfolio_net_roi, get_portfolio_average_roi
 
 
-def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
+def fill_portfolio(sorted_shares_list: list[dict], cost_limit: float) -> tuple[dict]:
     """
     Fills a portfolio with highest-profit shares according to the space left in the portfolio
     """
@@ -14,7 +14,7 @@ def fill_portfolio(sorted_shares_list: list[dict]) -> tuple[dict]:
     n = 0
     while n < len(sorted_shares_list):
         next_share = sorted_shares_list[n]
-        if portfolio_cost + next_share['cost'] <= 500.0:
+        if portfolio_cost + next_share['cost'] <= cost_limit:
             portfolio.append(next_share)
             portfolio_cost = get_portfolio_cost(portfolio)
         n += 1
@@ -33,13 +33,15 @@ def main() -> tuple[dict]:
     Sorts the list of shares from highest ROI to lowest and fills the portfolio
     until the portfolio cost reaches the limit of 500€
     """
-    csv_filepath = csv_filepath_args_parser()
+    args = csv_filepath_args_parser()
+    csv_filepath = args.csv_filepath
+    cost_limit = args.cost_limit if args.cost_limit else 500
     shares_list = from_csv_to_list_of_dict(csv_filepath)
     logging.basicConfig(filename="logs/optimized.log", level=logging.INFO, filemode='w')
     timer_0 = datetime.now()
     logging.info(f'Scan Start: {datetime.now()}')
     sorted_shares_list = get_sorted_shares_list(shares_list)
-    final_portfolio = fill_portfolio(sorted_shares_list)
+    final_portfolio = fill_portfolio(sorted_shares_list, cost_limit)
     logging.info(f'Scan End: {datetime.now()}')
     final_portfolio_net_roi = get_portfolio_net_roi(final_portfolio)
     final_portfolio_average_roi = get_portfolio_average_roi(final_portfolio)
