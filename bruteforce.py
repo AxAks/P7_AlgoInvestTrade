@@ -2,9 +2,8 @@ from datetime import datetime
 from itertools import combinations
 from typing import Callable, Any
 
-from utils import csv_filepath_args_parser
-from commons import serialize, from_csv_to_list_of_dict, get_portfolio_cost, get_portfolio_average_roi, \
-    get_portfolio_net_roi
+from commons import csv_filepath_args_parser, serialize, from_csv_to_list_of_dict, \
+    get_portfolio_cost, get_portfolio_average_roi, get_portfolio_net_roi
 
 
 def new_high_score(new_score: float, previous_score: float) -> bool:
@@ -15,13 +14,15 @@ def new_high_score(new_score: float, previous_score: float) -> bool:
     return new_score > previous_score
 
 
-def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
+def main(score: Callable[[Any], float],
          scan_begin: int = 1, scan_strength: int = 20) -> list[tuple]:
     """
     Returns all possible combinations of shares under the given criteria
     """
     timer_0 = datetime.now()
-    csv_filepath = csv_filepath_args_parser()
+    args = csv_filepath_args_parser()
+    csv_filepath = args.csv_filepath
+    cost_limit = args.cost_limit if args.cost_limit else 500
     shares_list = from_csv_to_list_of_dict(csv_filepath)
     best_portfolio = ({})
     best_portfolio_cost = 0.0
@@ -33,7 +34,7 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
         generator = combinations(shares_list, shares_amount)
         for portfolio in generator:  # 2^n -1
             cost = get_portfolio_cost(portfolio)
-            if _filter(cost):  # 1
+            if cost <= cost_limit:  # 1
                 acceptable_cost = cost
                 if not best_portfolio:
                     best_portfolio = portfolio
@@ -64,4 +65,4 @@ def main(_filter: Callable[[Any], bool], score: Callable[[Any], float],
 
 
 if __name__ == "__main__":
-    main(lambda x: x <= 500, get_portfolio_net_roi, scan_strength=20)
+    main(get_portfolio_net_roi)
