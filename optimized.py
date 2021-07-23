@@ -31,7 +31,7 @@ def get_sorted_shares_list(shares_list: list[dict]) -> list[dict]:
 def main() -> tuple[dict]:
     """
     Sorts the list of shares from highest ROI to lowest and fills the portfolio
-    until the portfolio cost reaches the limit of 500€
+    until the portfolio cost reaches the limit (500€ by default if not set)
     """
     args = csv_filepath_args_parser()
     csv_filepath = args.csv_filepath

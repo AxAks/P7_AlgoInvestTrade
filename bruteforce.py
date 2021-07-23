@@ -65,7 +65,7 @@ def main(score: Callable[[Any], float], replacement: bool = False, secure: bool 
                     best_portfolio_score = get_portfolio_net_roi(portfolio)
                     logging.info(f'-> New High: {best_portfolio_score} €')
                     if secure:
-                        file = f'results_backups/bruteforce_buffer_result.txt'
+                        file = 'results_backups/bruteforce_buffer_result.txt'
                         write_file(file, serialize(best_portfolio))
 
                 else:
@@ -80,7 +80,7 @@ def main(score: Callable[[Any], float], replacement: bool = False, secure: bool 
                         print(f'-> New High: {best_portfolio_score} €')
                         logging.info(f'-> New High: {best_portfolio_score} €')
                         if secure:
-                            file = f'results_backups/bruteforce_buffer_result.txt'
+                            file = 'results_backups/bruteforce_buffer_result.txt'
                             write_file(file, serialize(best_portfolio))
 
     if best_portfolio:
