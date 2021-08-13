@@ -8,7 +8,7 @@ import warnings
 import re
 
 
-def csv_filepath_args_parser():
+def args_on_launch_parser():
     """
     This function enables to launch the scripts with arguments
     - a CSV filepath containing the different shares

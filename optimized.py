@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from commons import csv_filepath_args_parser, serialize, from_csv_to_list_of_dict, \
+from commons import args_on_launch_parser, serialize, from_csv_to_list_of_dict, \
     get_portfolio_cost, get_portfolio_net_roi, get_portfolio_average_roi
 
 
@@ -33,7 +33,7 @@ def main() -> tuple[dict]:
     Sorts the list of shares from highest ROI to lowest and fills the portfolio
     until the portfolio cost reaches the limit (500€ by default if not set)
     """
-    args = csv_filepath_args_parser()
+    args = args_on_launch_parser()
     csv_filepath = args.csv_filepath
     cost_limit = args.cost_limit if args.cost_limit else 500
     shares_list = from_csv_to_list_of_dict(csv_filepath)

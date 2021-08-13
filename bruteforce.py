@@ -5,7 +5,7 @@ from itertools import combinations, combinations_with_replacement
 from typing import Callable, Any
 
 from utils import read_file, write_file
-from commons import csv_filepath_args_parser, serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, \
+from commons import args_on_launch_parser, serialize, deserialize, from_csv_to_list_of_dict, get_portfolio_cost, \
     get_portfolio_average_roi, get_portfolio_net_roi
 
 
@@ -22,7 +22,7 @@ def main(score: Callable[[Any], float], replacement: bool = False, secure: bool 
     """
     Returns all possible combinations of shares under the given criteria
     """
-    args = csv_filepath_args_parser()
+    args = args_on_launch_parser()
     csv_filepath = args.csv_filepath
     cost_limit = args.cost_limit if args.cost_limit else 500
     shares_list = from_csv_to_list_of_dict(csv_filepath)
